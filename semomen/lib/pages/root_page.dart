@@ -42,7 +42,9 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+          index: _selectedIndex,
+          children: _pages),
       bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
     );
   }
