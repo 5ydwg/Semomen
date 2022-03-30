@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:semomen/pages/guide_info_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -94,33 +95,38 @@ class _HomePageState extends State<HomePage> {
             separatorBuilder: (context, index) => SizedBox(
               width: 8.0,
             ),
-            itemBuilder: (context, index) => Container(
-              width: size.width * 0.6,
-              height: size.width * 0.6 * 0.625,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4.0),
-                  color: Colors.grey),
-              padding: EdgeInsets.all(8.0),
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 0.0,
-                    child: SizedBox(
-                      width: size.width * 0.6 * 0.25,
-                      height: size.width * 0.6 * 0.25 * 0.5,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style:
-                        ElevatedButton.styleFrom(primary: Colors.white),
-                        child: Text(
-                          '자세히',
+            itemBuilder: (context, index) => GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => GuideInfoPage()));
+              },
+              child: Container(
+                width: size.width * 0.6,
+                height: size.width * 0.6 * 0.625,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4.0),
+                    color: Colors.grey),
+                padding: EdgeInsets.all(8.0),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      bottom: 0.0,
+                      child: SizedBox(
+                        width: size.width * 0.6 * 0.25,
+                        height: size.width * 0.6 * 0.25 * 0.5,
+                        child: ElevatedButton(
+                          onPressed: () {},
                           style:
-                          TextStyle(fontSize: 8.0, color: Colors.black),
+                          ElevatedButton.styleFrom(primary: Colors.white),
+                          child: Text(
+                            '자세히',
+                            style:
+                            TextStyle(fontSize: 8.0, color: Colors.black),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
