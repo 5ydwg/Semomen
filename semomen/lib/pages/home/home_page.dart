@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:semomen/pages/detail_guide_info_page.dart';
 import 'package:semomen/pages/guide_info_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -297,39 +298,44 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSpacing: 8.0, // 수직 Padding
                 crossAxisSpacing: 8.0 // 수평 Padding
             ),
-            itemBuilder: (context, index) => Card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: size.width * 0.5 * 0.625,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4.0),
+            itemBuilder: (context, index) => GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage()));
+              },
+              child: Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: size.width * 0.5 * 0.625,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Job', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text('Name', style: TextStyle(fontWeight: FontWeight.bold),),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Job', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text('Name', style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Title', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text('Description', style: TextStyle(color: Colors.grey),),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Title', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text('Description', style: TextStyle(color: Colors.grey),),
+                        ],
+                      ),
                     ),
-                  ),
 
-                ],
+                  ],
+                ),
               ),
             ),
           ),
