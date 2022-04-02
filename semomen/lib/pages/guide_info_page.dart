@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:semomen/pages/constants/constant.dart';
+import 'package:semomen/pages/review_page.dart';
 
 class GuideInfoPage extends StatefulWidget {
   const GuideInfoPage({Key? key}) : super(key: key);
@@ -135,7 +136,9 @@ class _GuideInfoPageState extends State<GuideInfoPage> {
                 width: size.width * 0.3,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: mainBlueGreen),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ReviewPage()));
+                    },
                     child: Text('더보기')),
               ),
             ],
