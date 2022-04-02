@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:semomen/pages/constants/constant.dart';
+import 'package:semomen/pages/create_review_page.dart';
 
 class ReviewPage extends StatelessWidget {
   const ReviewPage({Key? key}) : super(key: key);
@@ -33,7 +34,7 @@ class ReviewPage extends StatelessWidget {
                 ],
               ),
             ),
-            _createReviewButton(size),  // 리뷰 작성 버튼
+            _createReviewButton(context, size),  // 리뷰 작성 버튼
           ],
         ),
       ),
@@ -190,7 +191,7 @@ class ReviewPage extends StatelessWidget {
                 );
   }
 
-  Widget _createReviewButton(Size size) {
+  Widget _createReviewButton(BuildContext context,Size size) {
     return Positioned(
               bottom: 30.0,
               child: SizedBox(
@@ -199,7 +200,9 @@ class ReviewPage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         primary: mainNavyBlue,
                       ),
-                      onPressed: () {}, child: Text('작성하기'))));
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateReviewPage()));
+                      }, child: Text('작성하기'))));
   }
 
   Widget _reviewProgressIndicator(Size size, String score, double value) {
