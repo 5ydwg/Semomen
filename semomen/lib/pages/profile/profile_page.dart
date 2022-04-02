@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:semomen/pages/my_coupon_page.dart';
@@ -73,7 +74,9 @@ class _ProfilePageState extends State<ProfilePage> {
               TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
         ),
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            FirebaseAuth.instance.signOut();
+          },
           icon: Icon(Icons.chevron_right),
         ),
         dense: true,

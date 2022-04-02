@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:semomen/pages/constants/constant.dart';
@@ -142,7 +143,7 @@ class _SignInPageState extends State<SignInPage> {
                           width: size.width,
                           child: ElevatedButton(
                               onPressed: () {
-                                //emailSignIn(_emailController, _passwordController);
+                                emailSignIn(_emailController, _passwordController);
                               },
                               style: ElevatedButton.styleFrom(
                                   primary: mainNavyBlue
@@ -174,5 +175,20 @@ class _SignInPageState extends State<SignInPage> {
         ],
       ),
     );
+  }
+  void emailSignIn(TextEditingController _emailController, TextEditingController _passwordController) async{
+    // 이메일 & 패스워드 로그인을 위한 정해진 폼.
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
   }
 }
