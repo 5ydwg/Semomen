@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:semomen/constants/constant.dart';
 import 'package:semomen/pages/detail_guide_info_page.dart';
 import 'package:semomen/pages/guide_info_page.dart';
 
@@ -17,6 +18,13 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        title: Text('세상의 모든 멘토',style: TextStyle(
+          fontWeight: FontWeight.bold,
+          foreground: Paint()..shader = LinearGradient(colors: <Color>[
+            mainBlueGreen,
+            mainBlueGrotto
+          ]).createShader(Rect.fromLTWH(0.0, 0.0, 300.0, 300.0)),
+        ),),
       ),
       body: ListView(
         children: [
