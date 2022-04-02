@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:semomen/pages/constants/constant.dart';
+import 'package:semomen/constants/constant.dart';
 
 class DetailGuideInfoPage extends StatefulWidget {
   const DetailGuideInfoPage({Key? key}) : super(key: key);

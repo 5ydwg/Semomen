@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import 'constants/constant.dart';
+import '../constants/constant.dart';
 
 class CreateReviewPage extends StatefulWidget {
   const CreateReviewPage({Key? key}) : super(key: key);
