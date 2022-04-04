@@ -20,7 +20,7 @@ class MenteeModel{
 
   MenteeModel.fromJson(Map<String, dynamic> json) :
         uid = json['uid'] ?? '',
-        mentorUid = json['mentor_uid'] ?? '',
-        programId = json['program_id'] ?? '',
-        couponList = json['coupon_list'] ?? '';
+        mentorUid = json['mentor_uid'] ?? [],
+        programId = json['program_id'] ?? [],
+        couponList = json['coupon_list'] ?? [];
 }
