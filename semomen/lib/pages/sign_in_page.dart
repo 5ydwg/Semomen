@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:semomen/constants/constant.dart';
+import 'package:semomen/pages/sign_up_page.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -160,6 +161,7 @@ class _SignInPageState extends State<SignInPage> {
                             Text('계정이 없으신가요?', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
                             GestureDetector(
                                 onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpPage()));
                                 },
                                 child: Text(' 계정 생성하기', style: TextStyle(color: mainBlueGrotto, fontWeight: FontWeight.bold),)),
                           ],
