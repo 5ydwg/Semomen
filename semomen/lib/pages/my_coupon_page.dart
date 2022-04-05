@@ -37,21 +37,15 @@ class _MyCouponPageState extends State<MyCouponPage> {
           color: Colors.black, //뒤로가기 색변경
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: dataList.length,
-              itemBuilder: (BuildContext context, int index) {
-                Map<String, dynamic> data = dataList[index];
-                String title = data["title"];
-                String subtitle = data["subtitle"];
-                String subtitle1 = data["subtitle1"];
-                return CouponList(data: data);
-              },
-            ),
-          )
-        ],
+      body: ListView.builder(
+        itemCount: dataList.length,
+        itemBuilder: (BuildContext context, int index) {
+          Map<String, dynamic> data = dataList[index];
+          String title = data["title"];
+          String subtitle = data["subtitle"];
+          String subtitle1 = data["subtitle1"];
+          return CouponList(data: data);
+        },
       ),
     );
   }
@@ -68,46 +62,41 @@ class CouponList extends StatelessWidget {
       margin: const EdgeInsets.all(7),
       elevation: 3.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: ListTile(
-            leading: Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: Icon(
-                Icons.confirmation_num_outlined,
-                color: Colors.blue[300],
-                size: 30,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(children: [
+          Icon(
+            Icons.confirmation_num_outlined,
+            color: Colors.blue[300],
+            size: 30,
+          ),
+          SizedBox(
+            width: 12.0,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data['title'],
+                style: TextStyle(color: Colors.grey, fontSize: 13),
               ),
-            ),
-            title: Text(
-              data["title"],
-              style: TextStyle(color: Colors.grey, fontSize: 13),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  data["subtitle"],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: Text(
+                  data['subtitle'],
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 18,
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  data["subtitle1"],
-                  style: TextStyle(color: Colors.grey, fontSize: 13),
-                )
-              ],
-            ),
+              ),
+              Text(
+                data['subtitle1'],
+                style: TextStyle(color: Colors.grey, fontSize: 13),
+              )
+            ],
           ),
-        ),
+        ]),
       ),
     );
   }
