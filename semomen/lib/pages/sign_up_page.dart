@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,6 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _birthController = TextEditingController();
   TextEditingController _jobController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
+  bool isLoading = false; // 계정 생성 과정을 나타내는 변수
 
 
 
@@ -51,48 +53,58 @@ class _SignUpPageState extends State<SignUpPage> {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Stack(
-           children: [
-             ListView(
-               children: [
-                 _emailInput(),
-                 Divider(),
-                 _pwdInput(),
-                 Divider(),
-                 _pwdConfirmInput(),
-                 Divider(),
-                 _userNameInput(),
-                 Divider(),
-                 _dateOfBirthInput(context),
-                 Divider(),
-                 _jobInput(),
-                 Divider(),
-                 _phoneNumberInput(),
-                 SizedBox(height: 70.0,),
-               ],
-             ),
-             Positioned(
-               bottom: 0.0,
-               child: SizedBox(
-                 width: size.width - 24.0,
-                 child: ElevatedButton(
-                   style: ElevatedButton.styleFrom(
-                     primary: mainNavyBlue
-                   ),
-                     onPressed: () {
-                       createUserData(users);
-                     },
-                     child: Text('가입하기')),
-               ),
-             ),
-
-           ],
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Stack(
+                children: [
+                  ListView(
+                    children: [
+                      _emailInput(),
+                      Divider(),
+                      _pwdInput(),
+                      Divider(),
+                      _pwdConfirmInput(),
+                      Divider(),
+                      _userNameInput(),
+                      Divider(),
+                      _dateOfBirthInput(context),
+                      Divider(),
+                      _jobInput(),
+                      Divider(),
+                      _phoneNumberInput(),
+                      SizedBox(height: 70.0,),
+                    ],
+                  ),
+                  Positioned(
+                    bottom: 0.0,
+                    child: SizedBox(
+                      width: size.width - 24.0,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: mainNavyBlue
+                          ),
+                          onPressed: () {
+                            FocusScope.of(context).unfocus(); // 포커스 해제
+                            attemptSignUp();
+                          },
+                          child: Text('가입하기')),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+          Visibility(
+              visible: isLoading,
+              child: Container(color: Colors.black.withOpacity(0.5),
+              child: Center(child: CircularProgressIndicator(
+              )),)),
+
+        ],
+      )
     );
   }
 
@@ -136,29 +148,28 @@ class _SignUpPageState extends State<SignUpPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('생년월일', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
-                TextField(
-                  controller: _birthController,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      splashRadius: 1.0,
-                      onPressed: () {
-                        showPickerDate(context);
-                      },
-                      icon: Icon(Icons.arrow_drop_down, color: Colors.grey,),
+                GestureDetector(
+                  onTap: () {
+                    showPickerDate(context);
+                  },
+                  child: TextField(
+                    controller: _birthController,
+                    enabled: false,
+                    cursorColor: Colors.black,
+                    decoration: InputDecoration(
+                      hintText: '생년월일을 선택해주세요.',
+                      filled: true,
+                      fillColor: Color(0xfff6f6fd),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
                     ),
-                    hintText: '생년월일을 선택해주세요.',
-                    filled: true,
-                    fillColor: Color(0xfff6f6fd),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
+                    onChanged: (String text) {
+                    },
+                    onSubmitted: (String text) {
+                    },
                   ),
-                  onChanged: (String text) {
-                  },
-                  onSubmitted: (String text) {
-                  },
                 ),
               ],
             );
@@ -358,15 +369,72 @@ class _SignUpPageState extends State<SignUpPage> {
             );
   }
 
-  Future<void> createUserData(CollectionReference users) async{
-    Map<String, dynamic> _userMap = UserModel(uid: '', userName: '', email: '', phoneNumber: '', birth: '', job: '').toJson();
+  void showSnackBar(String text) {
+    final snackBar = SnackBar(content: Text(text));
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
 
-    return await users.doc('1asfgh254tazsf').set(_userMap)
-        .then((value) {
-      print("User Added");
-    })
-        .catchError((error) => print("Failed to add user: $error"));
+  void attemptSignUp() async{
+    setState(() {
+      isLoading = true;
+    });
+    // create user with email & password in firebase.
+    try {
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _pwdController.text,
+      );
+
+      createUserData(
+        uid: credential.user!.uid,
+        email: _emailController.text,
+        userName: _userNameController.text,
+        birth: _birthController.text,
+        job: _jobController.text,
+        phoneNumber: _phoneNumberController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      if (e.code == 'weak-password') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('비밀번호를 다시 입력해주세요'),));
+        debugPrint('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('이미 존재하는 이메일입니다.'),));
+        debugPrint('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
 
+  Future<void> createUserData({
+    required String uid,
+    required String email,
+    required String userName,
+    required String birth,
+    required String job,
+    required String phoneNumber,}) async{
+    Map<String, dynamic> _userMap = UserModel(uid: uid, userName: userName, email: email, phoneNumber: phoneNumber, birth: birth, job: job).toJson();
+
+    return await users.doc(uid).set(_userMap)
+        .then((value) {
+      // if you have successfully created user data in firestore
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('가입 완료'),));
+      setState(() {
+        isLoading = false;
+      });
+      Navigator.of(context).pop();
+
+    })
+        .catchError((error) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('가입 실패'),));
+      return debugPrint("Failed to add user: $error");
+    });
+  }
 }
