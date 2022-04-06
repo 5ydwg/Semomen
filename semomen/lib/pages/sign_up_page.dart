@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:semomen/constants/constant.dart';
+import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/model/user_model.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -15,6 +16,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference mentees = FirebaseFirestore.instance.collection('mentees');
   TextEditingController _emailController = TextEditingController();
   TextEditingController _pwdController = TextEditingController();
   TextEditingController _pwdConfirmController = TextEditingController();
@@ -384,7 +386,7 @@ class _SignUpPageState extends State<SignUpPage> {
         email: _emailController.text,
         password: _pwdController.text,
       );
-
+      //user 정보 생성
       createUserData(
         uid: credential.user!.uid,
         email: _emailController.text,
@@ -392,6 +394,10 @@ class _SignUpPageState extends State<SignUpPage> {
         birth: _birthController.text,
         job: _jobController.text,
         phoneNumber: _phoneNumberController.text,
+      );
+      //mentee 정보 생성
+      createMenteeData(
+        uid: credential.user!.uid,
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -435,6 +441,19 @@ class _SignUpPageState extends State<SignUpPage> {
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('가입 실패'),));
       return debugPrint("Failed to add user: $error");
+    });
+  }
+
+  Future<void> createMenteeData({
+    required String uid,}) async{
+    Map<String, dynamic> _menteeMap = MenteeModel(uid: uid, mentorUid: [], couponList: [], programId: [],).toJson();
+
+    return await mentees.doc(uid).set(_menteeMap)
+        .then((value) {
+          debugPrint('create mentee doc');
+    })
+        .catchError((error) {
+      return debugPrint("Failed to add mentee: $error");
     });
   }
 }
