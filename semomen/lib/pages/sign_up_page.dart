@@ -54,34 +54,114 @@ class _SignUpPageState extends State<SignUpPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: ListView(
-            children: [
-              _emailInput(),
-              Divider(),
-              _pwdInput(),
-              Divider(),
-              _pwdConfirmInput(),
-              Divider(),
-              _userNameInput(),
-              Divider(),
-              Text('생년월일', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
-              ElevatedButton(onPressed: () {
-                showPickerDate(context);
-              }, child: Text('asd')),
-              Divider(),
-              _jobInput(),
-              Divider(),
-              Text('휴대폰 번호', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
-              ElevatedButton(
-                onPressed: () {
-                  createUserData(users);
-                },
-                child: Text('가입하기')),
-            ],
+          child: Stack(
+           children: [
+             ListView(
+               children: [
+                 _emailInput(),
+                 Divider(),
+                 _pwdInput(),
+                 Divider(),
+                 _pwdConfirmInput(),
+                 Divider(),
+                 _userNameInput(),
+                 Divider(),
+                 _dateOfBirthInput(context),
+                 Divider(),
+                 _jobInput(),
+                 Divider(),
+                 _phoneNumberInput(),
+                 SizedBox(height: 70.0,),
+               ],
+             ),
+             Positioned(
+               bottom: 0.0,
+               child: SizedBox(
+                 width: size.width - 24.0,
+                 child: ElevatedButton(
+                   style: ElevatedButton.styleFrom(
+                     primary: mainNavyBlue
+                   ),
+                     onPressed: () {
+                       createUserData(users);
+                     },
+                     child: Text('가입하기')),
+               ),
+             ),
+
+           ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _phoneNumberInput() {
+    return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('휴대폰 번호', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                TextField(
+                  controller: _phoneNumberController,
+                  cursorColor: Colors.black,
+                  maxLength: 11,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.phone_android_outlined, color: Colors.grey,),
+                    suffixIcon: IconButton(
+                      splashRadius: 1.0,
+                      onPressed: () {
+                        _phoneNumberController.clear();
+                      },
+                      icon: Icon(Icons.cancel, color: Colors.grey,),
+                    ),
+                    hintText: '숫자만 입력해주세요',
+                    filled: true,
+                    fillColor: Color(0xfff6f6fd),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  onChanged: (String text) {
+                  },
+                  onSubmitted: (String text) {
+                  },
+                ),
+              ],
+            );
+  }
+
+  Widget _dateOfBirthInput(BuildContext context) {
+    return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('생년월일', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                TextField(
+                  controller: _birthController,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      splashRadius: 1.0,
+                      onPressed: () {
+                        showPickerDate(context);
+                      },
+                      icon: Icon(Icons.arrow_drop_down, color: Colors.grey,),
+                    ),
+                    hintText: '생년월일을 선택해주세요.',
+                    filled: true,
+                    fillColor: Color(0xfff6f6fd),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  onChanged: (String text) {
+                  },
+                  onSubmitted: (String text) {
+                  },
+                ),
+              ],
+            );
   }
 
   // use flutter_picker: ^2.0.3
@@ -89,12 +169,25 @@ class _SignUpPageState extends State<SignUpPage> {
     Picker(
         hideHeader: true,
         adapter: DateTimePickerAdapter(),
-        title: Text("Select Data"),
+        title: Text("생년월일"),
         selectedTextStyle: TextStyle(color: Colors.blue),
+        cancelText: '취소',
+        confirmText: '확인',
         onConfirm: (Picker picker, List value) {
-          print((picker.adapter as DateTimePickerAdapter).value);
-          print((picker.adapter as DateTimePickerAdapter).value.runtimeType);
-        }).showDialog(context);
+          DateTime? _selectDate = (picker.adapter as DateTimePickerAdapter).value;
+          String _year;
+          String _month;
+          String _date;
+          if(_selectDate != null) {
+            _year = _selectDate.year.toString();
+            _month = _selectDate.month.toString();
+            _date = _selectDate.day.toString();
+            _birthController.text = '$_year'+'-'+'$_month'+'-'+'$_date';
+          } else {
+            _birthController.text = 'error';
+          }
+        })
+        .showDialog(context);
   }
 
   Widget _jobInput() {
