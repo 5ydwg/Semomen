@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:semomen/pages/chat/chat_page.dart';
 import 'package:semomen/pages/home/home_page.dart';
 import 'package:semomen/pages/profile/profile_page.dart';
 import 'package:semomen/pages/search/search_page.dart';
+import 'package:semomen/providers/mentee_provider.dart';
+
+import 'package:semomen/providers/user_provider.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({Key? key}) : super(key: key);
@@ -41,11 +46,17 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-          index: _selectedIndex,
-          children: _pages),
-      bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => MenteeProvider(firebaseAuth: FirebaseAuth.instance)),
+      ],
+      child: Scaffold(
+        body: IndexedStack(
+            index: _selectedIndex,
+            children: _pages),
+        bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
+      ),
     );
   }
 }

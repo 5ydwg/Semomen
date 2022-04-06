@@ -423,7 +423,8 @@ class _SignUpPageState extends State<SignUpPage> {
     required String birth,
     required String job,
     required String phoneNumber,}) async{
-    Map<String, dynamic> _userMap = UserModel(uid: uid, userName: userName, email: email, phoneNumber: phoneNumber, birth: birth, job: job).toJson();
+    Map<String, dynamic> _userMap =
+      UserModel(uid: uid, userName: userName, email: email, isMentor:false, isMentee:true, profileImg:'',phoneNumber: phoneNumber, birth: birth, job: job).toJson();
 
     return await users.doc(uid).set(_userMap)
         .then((value) {

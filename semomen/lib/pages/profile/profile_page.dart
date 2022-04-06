@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/my_coupon_page.dart';
 import 'package:semomen/pages/purchased_guide_page.dart';
+import 'package:semomen/providers/user_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -14,54 +18,70 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            _profileBox(size),
-            Card(
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Text('구매 가이드'),
-                    trailing: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PurchasedGuidePage()),
-                        );
-                      },
-                      icon: Icon(Icons.chevron_right),
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) {
+        return StreamBuilder<DocumentSnapshot>(
+            stream: userProvider.getCurrentUser(),
+            builder: (context, snapshot) {
+              if(snapshot.hasError) {
+                return Text('Something went wrong');
+              } else if(snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else {
+                UserModel _user = UserModel.fromDoc(snapshot.data!);
+                return Scaffold(
+                  body: SafeArea(
+                    child: Column(
+                      children: [
+                        _profileBox(size, _user),
+                        Card(
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: Text('구매 가이드'),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PurchasedGuidePage()),
+                                    );
+                                  },
+                                  icon: Icon(Icons.chevron_right),
+                                ),
+                                dense: true,
+                              ),
+                              Divider(
+                                height: 0.0,
+                              ),
+                              ListTile(
+                                leading: Text('쿠폰함'),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MyCouponPage()),
+                                    );
+                                  },
+                                  icon: Icon(Icons.chevron_right),
+                                ),
+                                dense: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                        _settingsBox(),
+                        Spacer(),
+                        _signOutBox(),
+                      ],
                     ),
-                    dense: true,
                   ),
-                  Divider(
-                    height: 0.0,
-                  ),
-                  ListTile(
-                    leading: Text('쿠폰함'),
-                    trailing: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MyCouponPage()),
-                        );
-                      },
-                      icon: Icon(Icons.chevron_right),
-                    ),
-                    dense: true,
-                  ),
-                ],
-              ),
-            ),
-            _settingsBox(),
-            Spacer(),
-            _signOutBox(),
-          ],
-        ),
-      ),
+                );
+              }
+            }
+        );
+      },
     );
   }
 
@@ -123,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _profileBox(Size size) {
+  Widget _profileBox(Size size, UserModel user) {
     return SizedBox(
       height: size.height * 0.3,
       child: Column(
@@ -132,13 +152,16 @@ class _ProfilePageState extends State<ProfilePage> {
           CircleAvatar(
             radius: size.width * 0.1,
             backgroundImage: NetworkImage(
-                "https://cdn.pixabay.com/photo/2018/04/27/03/50/portrait-3353699_1280.jpg"),
+                user.profileImg),
+            onBackgroundImageError: (Object exception, StackTrace? stackTrace) {
+              debugPrint('image error');
+            },
             backgroundColor: Colors.transparent,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Text(
-              'name',
+              user.userName,
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
           ),

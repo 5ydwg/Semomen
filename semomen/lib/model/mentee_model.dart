@@ -1,8 +1,8 @@
 class MenteeModel{
   String uid;
-  List<String> mentorUid;
-  List<String> programId;
-  List<String> couponList;
+  List<dynamic> mentorUid;
+  List<dynamic> programId;
+  List<dynamic> couponList;
 
   MenteeModel({
     required this.uid,

@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
+import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/pages/detail_guide_info_page.dart';
 import 'package:semomen/pages/guide_info_page.dart';
+import 'package:semomen/providers/mentee_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -283,71 +287,94 @@ class _HomePageState extends State<HomePage> {
     );
   }
   Widget _purchasedGuide(Size size) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('나의 구매 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-              Icon(Icons.chevron_right),
-            ],
-          ),
-          SizedBox(height: 8.0,),
-          GridView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 2,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // 한 행에 보여줄 item 수
-                childAspectRatio: 1 / 1.6, // item의 가로, 세로 비율
-                mainAxisSpacing: 8.0, // 수직 Padding
-                crossAxisSpacing: 8.0 // 수평 Padding
-            ),
-            itemBuilder: (context, index) => GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage()));
-              },
-              child: Card(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: size.width * 0.5 * 0.625,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
+    return Consumer<MenteeProvider>(
+      builder: (context, menteeProvider, child) {
+        return FutureBuilder<DocumentSnapshot>(
+            future: menteeProvider.getMentee(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text("Something went wrong");
+              }
+
+              if (snapshot.hasData && !snapshot.data!.exists) {
+                return Text("Document does not exist");
+              }
+
+              if (snapshot.connectionState == ConnectionState.done) {
+                MenteeModel mentee = MenteeModel.fromJson(snapshot.data!.data() as Map<String, dynamic>);
+                return Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Job', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('Name', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text('나의 구매 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                          Icon(Icons.chevron_right),
                         ],
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Title', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('Description', style: TextStyle(color: Colors.grey),),
-                        ],
-                      ),
-                    ),
+                      SizedBox(height: 8.0,),
+                      GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: mentee.programId.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // 한 행에 보여줄 item 수
+                            childAspectRatio: 1 / 1.6, // item의 가로, 세로 비율
+                            mainAxisSpacing: 8.0, // 수직 Padding
+                            crossAxisSpacing: 8.0 // 수평 Padding
+                        ),
+                        itemBuilder: (context, index) => GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage()));
+                          },
+                          child: Card(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: size.width * 0.5 * 0.625,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(4.0),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('asd', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      Text('Name', style: TextStyle(fontWeight: FontWeight.bold),),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Title', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      Text('Description', style: TextStyle(color: Colors.grey),),
+                                    ],
+                                  ),
+                                ),
 
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],),
+                );
+              }
+
+              return Text("loading");
+
+            }
+        );
+      },
     );
   }
 }
