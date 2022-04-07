@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
+import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/pages/detail_guide_info_page.dart';
 import 'package:semomen/pages/guide_info_page.dart';
@@ -325,45 +326,62 @@ class _HomePageState extends State<HomePage> {
                             mainAxisSpacing: 8.0, // 수직 Padding
                             crossAxisSpacing: 8.0 // 수평 Padding
                         ),
-                        itemBuilder: (context, index) => GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage()));
-                          },
-                          child: Card(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: size.width * 0.5 * 0.625,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(4.0),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('asd', style: TextStyle(fontWeight: FontWeight.bold),),
-                                      Text('Name', style: TextStyle(fontWeight: FontWeight.bold),),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        itemBuilder: (context, index) => FutureBuilder<DocumentSnapshot>(
+                          future: postRef.doc(mentee.programId[index]).get(),
+                          builder: (context, postSnapshot) {
+                            if (postSnapshot.hasError) {
+                            return Text("Something went wrong");
+                            }
+
+                            if (postSnapshot.hasData && !postSnapshot.data!.exists) {
+                            return Text("Document does not exist!!");
+                            }
+
+                            if (postSnapshot.connectionState == ConnectionState.done) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage()));
+                                },
+                                child: Card(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Title', style: TextStyle(fontWeight: FontWeight.bold),),
-                                      Text('Description', style: TextStyle(color: Colors.grey),),
+                                      Container(
+                                        height: size.width * 0.5 * 0.625,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(4.0),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(postSnapshot.data!.get('job'), style: TextStyle(fontWeight: FontWeight.bold),),
+                                            Text(postSnapshot.data!.get('user_name'), style: TextStyle(fontWeight: FontWeight.bold),),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(postSnapshot.data!.get('intro_title'), style: TextStyle(fontWeight: FontWeight.bold),),
+                                            SizedBox(height: 12.0,),
+                                            Text(postSnapshot.data!.get('intro'), style: TextStyle(color: Colors.grey), maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                          ],
+                                        ),
+                                      ),
+
                                     ],
                                   ),
                                 ),
-
-                              ],
-                            ),
-                          ),
+                              );
+                            }
+                            return Text('Loading');
+                          }
                         ),
                       ),
                     ],),
