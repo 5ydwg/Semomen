@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/mentee_model.dart';
+import 'package:semomen/model/post_model.dart';
 import 'package:semomen/pages/detail_guide_info_page.dart';
 import 'package:semomen/pages/guide_info_page.dart';
 import 'package:semomen/providers/mentee_provider.dart';
@@ -338,9 +340,10 @@ class _HomePageState extends State<HomePage> {
                             }
 
                             if (postSnapshot.connectionState == ConnectionState.done) {
+                              PostModel post = PostModel.fromDoc(postSnapshot.data!);
                               return GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage()));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: post,)));
                                 },
                                 child: Card(
                                   child: Column(
@@ -348,18 +351,18 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Container(
                                         height: size.width * 0.5 * 0.625,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(4.0),
-                                        ),
+                                        alignment: Alignment.center,
+                                        child: Image.network(post.jobImgUrl,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) => Image.network('https://cdn.pixabay.com/photo/2018/09/22/11/34/board-3695073_1280.jpg'),),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(postSnapshot.data!.get('job'), style: TextStyle(fontWeight: FontWeight.bold),),
-                                            Text(postSnapshot.data!.get('user_name'), style: TextStyle(fontWeight: FontWeight.bold),),
+                                            Text(post.job, style: TextStyle(fontWeight: FontWeight.bold),),
+                                            Text(post.userName, style: TextStyle(fontWeight: FontWeight.bold),),
                                           ],
                                         ),
                                       ),
@@ -368,9 +371,9 @@ class _HomePageState extends State<HomePage> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(postSnapshot.data!.get('intro_title'), style: TextStyle(fontWeight: FontWeight.bold),),
+                                            Text(post.introTitle, style: TextStyle(fontWeight: FontWeight.bold),),
                                             SizedBox(height: 12.0,),
-                                            Text(postSnapshot.data!.get('intro'), style: TextStyle(color: Colors.grey), maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                            Text(post.intro, style: TextStyle(color: Colors.grey), maxLines: 2,overflow: TextOverflow.ellipsis,),
                                           ],
                                         ),
                                       ),

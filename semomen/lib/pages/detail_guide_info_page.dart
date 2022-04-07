@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:semomen/constants/constant.dart';
+import 'package:semomen/model/post_model.dart';
 
 class DetailGuideInfoPage extends StatefulWidget {
-  const DetailGuideInfoPage({Key? key}) : super(key: key);
+  final PostModel post;
+  const DetailGuideInfoPage({Key? key, required this.post}) : super(key: key);
 
   @override
   _DetailGuideInfoPageState createState() => _DetailGuideInfoPageState();
@@ -43,11 +45,11 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
           Divider(
             height: 20.0,
           ),
-          _detailVideo(size),
-          Divider(
-            height: 20.0,
-          ),
-          _recommendedBook(context, size),
+          //_detailVideo(size),
+          // Divider(
+          //   height: 20.0,
+          // ),
+          //_recommendedBook(context, size),
           SizedBox(height: 100.0,),
         ],
       ),
@@ -78,29 +80,18 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: (size.width - 24.0) * 0.5,
-                  height: (size.width) * 0.625 * 0.5,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4.0),
-                      color: mainBabyBlue),
-                ),
-                SizedBox(
-                  width: 12.0,
-                ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '항해사가 걸어온 길',
+                        widget.post.introTitle,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 8.0,
                       ),
-                      Text(
-                          '항해사가 어떤 일을 하는지 궁금하시지 않나요? 항해사가 하는 일과 항해사가 되기위한 길 A-Z까지 모두 알려드립니다!\n\n필요한 정보를 지속적으로 알려주기 위한채팅 기능도 개설되어 있습니다! ')
+                      Text(widget.post.intro),
                     ],
                   ),
                 )
@@ -146,6 +137,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
     );
   }
 
+
   Widget _mentorInformation() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +161,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [Text('김OO'), Text('항해사')],
+                  children: [Text(widget.post.userName), Text(widget.post.job)],
                 ),
               ],
             ),
@@ -185,19 +177,9 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '- A',
-                style: TextStyle(color: Colors.grey),
-              ),
-              Text(
-                '- B',
-                style: TextStyle(color: Colors.grey),
-              ),
-              Text(
-                '- C',
-                style: TextStyle(color: Colors.grey),
-              ),
+              ...widget.post.career.map((e) => Text('- ' + e, style: TextStyle(color: Colors.grey),)),
             ],
           ),
         )
@@ -205,31 +187,81 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
     );
   }
 
+  List<ExpansionPanelRadio> lecture(Size size) {
+    final lecture = widget.post.lecture.toList();
+    return lecture.asMap().entries.map((entry) {
+      int value = entry.key;
+      dynamic content = entry.value;
+      return _capabilitiesGuideItem(size, value, content);
+    }).toList();
+  }
+  List<ExpansionPanelRadio> major(Size size) {
+    final major = widget.post.major.toList();
+    return major.asMap().entries.map((entry) {
+      int value = entry.key;
+      dynamic content = entry.value;
+      return _capabilitiesGuideItem(size, value, content);
+    }).toList();
+  }
+  List<ExpansionPanelRadio> vLog(Size size) {
+    final vLog = widget.post.vLog.toList();
+    return vLog.asMap().entries.map((entry) {
+      int value = entry.key;
+      dynamic content = entry.value;
+      return _capabilitiesGuideItem(size, value, content);
+    }).toList();
+  }
+
   Widget _capabilitiesGuide(Size size) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text(
-            '역량 가이드',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
+              '역량 가이드',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+            ),
           ),
-        ),
-        ExpansionPanelList.radio(
-          expandedHeaderPadding: EdgeInsets.all(0.0),
-          children: [
-            _capabilitiesGuideItem(size, 0),
-            _capabilitiesGuideItem(size, 1),
-            _capabilitiesGuideItem(size, 2),
-            _capabilitiesGuideItem(size, 3),
-          ],
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text('추천 강의', style: TextStyle(fontWeight: FontWeight.bold),),
+          ),
+          ExpansionPanelList.radio(
+            expandedHeaderPadding: EdgeInsets.all(0.0),
+            children: [
+              ...lecture(size),
+            ],
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text('추천 전공', style: TextStyle(fontWeight: FontWeight.bold),),
+          ),
+          ExpansionPanelList.radio(
+            expandedHeaderPadding: EdgeInsets.all(0.0),
+            children: [
+              ...major(size),
+            ],
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text('추천 브이로그', style: TextStyle(fontWeight: FontWeight.bold),),
+          ),
+          ExpansionPanelList.radio(
+            expandedHeaderPadding: EdgeInsets.all(0.0),
+            children: [
+              ...vLog(size),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
-  ExpansionPanelRadio _capabilitiesGuideItem(Size size, int index) {
+  ExpansionPanelRadio _capabilitiesGuideItem(Size size, int index, dynamic content) {
     return ExpansionPanelRadio(
       value: index,
       headerBuilder: (context, isExpanded) {
@@ -260,21 +292,27 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Title ${index + 1}',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    SizedBox(
+                      width: size.width * 0.5,
+                      child: Text(
+                        content['title'],
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     SizedBox(
                       width: size.width * 0.5,
                       child: Text(
-                        'Description',
+                        content['desc'],
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Text(
-                      'https://www.kmou.ac.kr',
-                      style: TextStyle(color: Colors.blue),
+                    SizedBox(
+                      width: size.width * 0.5,
+                      child: Text(
+                        content['url'],
+                        style: TextStyle(color: Colors.blue, overflow: TextOverflow.ellipsis),
+                      ),
                     ),
                   ],
                 ),

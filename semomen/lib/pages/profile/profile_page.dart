@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/my_coupon_page.dart';
 import 'package:semomen/pages/purchased_guide_page.dart';
@@ -149,14 +150,14 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircleAvatar(
-            radius: size.width * 0.1,
-            backgroundImage: NetworkImage(
-                user.profileImg),
-            onBackgroundImageError: (Object exception, StackTrace? stackTrace) {
-              debugPrint('image error');
-            },
-            backgroundColor: Colors.transparent,
+          ClipOval(
+              child: Image.network(
+                user.profileImg,
+                fit: BoxFit.cover,
+                width: size.width * 0.2,
+                height: size.width * 0.2,
+                errorBuilder: (context, error, stackTrace) => Container(height: size.width * 0.2, width:size.width * 0.2,color: mainBabyBlue,),
+              )
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
