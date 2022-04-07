@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/post_model.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class DetailGuideInfoPage extends StatefulWidget {
   final PostModel post;
@@ -12,6 +14,21 @@ class DetailGuideInfoPage extends StatefulWidget {
 }
 
 class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
+  late YoutubePlayerController _youtubePlayerController;
+
+  @override
+  void initState() {
+    _youtubePlayerController = YoutubePlayerController(initialVideoId: YoutubePlayerController.convertUrlToId(widget.post.jobVideoUrl)!,
+    params: const YoutubePlayerParams(
+      loop: false,
+      color: 'transparent',
+      strictRelatedVideos: true,
+      showFullscreenButton: !kIsWeb,
+    ),
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
@@ -340,16 +357,17 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
     );
   }
 
+  // use youtube_payer_iframe 2.2.2
   Container _detailVideo(Size size) {
     return Container(
       width: size.width,
       height: size.width * 0.625,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4.0), color: mainBabyBlue),
-      child: Center(
-        child: Icon(
-          Icons.play_circle_outline,
-          color: Colors.grey,
+          borderRadius: BorderRadius.circular(4.0), color: Colors.grey[100]),
+      child: YoutubePlayerControllerProvider(
+        controller: _youtubePlayerController,
+        child: YoutubePlayerIFrame(
+          controller: _youtubePlayerController,
         ),
       ),
     );
