@@ -3,10 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/post_model.dart';
-import 'package:semomen/model/review_model.dart';
 import 'package:semomen/pages/review_page.dart';
+import 'package:semomen/providers/review_provider.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class DetailGuideInfoPage extends StatefulWidget {
@@ -33,7 +34,13 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
         showFullscreenButton: !kIsWeb,
       ),
     );
+    context.read<ReviewProvider>().getReviews(postId: widget.post.postId);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -100,15 +107,10 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
           Divider(
             height: 20.0,
           ),
-          _review(size),
+          _reviews(size),
           Divider(
             height: 20.0,
           ),
-          //_detailVideo(size),
-          // Divider(
-          //   height: 20.0,
-          // ),
-          //_recommendedBook(context, size),
           SizedBox(
             height: 100.0,
           ),
@@ -154,66 +156,40 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
     return double.parse(average.toStringAsFixed(1));  // 소수점 1자리까지 출력
   }
 
-
-  Widget _review(Size size) {
-    return FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('posts')
-            .doc(widget.post.uid)
-            .collection('reviews')
-            .where('uid',
-                isNotEqualTo:
-                    widget.post.uid.substring(0, widget.post.uid.length - 1))
-            .get(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text("Something went wrong");
-          }
-          if (snapshot.hasData && !snapshot.data!.docs.isNotEmpty) {
-            return Text("Document does not exist");
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            final reviews = snapshot.data!.docs;  // 해당 포스트의 모든 리뷰(포스트 작성자는 제외)
-            final double averageScore = averageReviewScore(reviews);
-            
-            List<ReviewModel> postReviews =
-                reviews.map((e) => ReviewModel.fromDoc(e) ).toList();
-            return Column(
-              children: [
-                Text(
-                  '리뷰',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                ),
-                _reviewStars(averageScore),
-                Text(
-                  '${averageScore}',
-                  style: TextStyle(
-                      color: Colors.yellow[600], fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${reviews.length}개의 평가',
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-                SizedBox(
-                  width: size.width * 0.3,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: mainBlueGreen),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ReviewPage(
-                                  reviews: postReviews,
-                                )));
-                      },
-                      child: Text('더보기')),
-                ),
-              ],
-            );
-          }
-
-          return Text("loading");
-        });
+  Widget _reviews(Size size) {
+    return Consumer<ReviewProvider>(
+      builder: (context, reviewProvider, child) => Column(
+        children: [
+          Text(
+            '리뷰',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+          ),
+          _reviewStars(reviewProvider.getRating()),
+          Text(
+            '${reviewProvider.getRating()}',
+            style: TextStyle(
+                color: Colors.yellow[600], fontWeight: FontWeight.bold),
+          ),
+          Text(
+            '${reviewProvider.reviews.length}개의 평가',
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+          SizedBox(
+            width: size.width * 0.3,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: mainBlueGreen),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ReviewPage(
+                        postId: widget.post.postId,
+                      )));
+                },
+                child: Text('더보기')),
+          ),
+        ],
+      ));
   }
 
   Widget _reviewStars(double averageScore) {

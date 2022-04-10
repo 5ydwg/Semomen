@@ -8,6 +8,7 @@ import 'package:semomen/pages/profile/profile_page.dart';
 import 'package:semomen/pages/search/search_page.dart';
 import 'package:semomen/providers/mentee_provider.dart';
 import 'package:semomen/providers/post_provider.dart';
+import 'package:semomen/providers/review_provider.dart';
 import 'package:semomen/providers/user_provider.dart';
 import 'package:semomen/repositories/post_repository.dart';
 class RootPage extends StatefulWidget {

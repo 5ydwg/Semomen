@@ -20,13 +20,13 @@ class ReviewModel {
     'upload_time':uploadTime,
   };
 
-  factory ReviewModel.fromDoc(DocumentSnapshot userDoc) {
-    final userData = userDoc.data() as Map<String, dynamic>?;
+  factory ReviewModel.fromDoc(DocumentSnapshot reviewDoc) {
+    final reviewData = reviewDoc.data() as Map<String, dynamic>?;
     return ReviewModel(
-        review : userData!['review'],
-        star : userData['star'],
-        uid: userDoc.id,
-        uploadTime : userData['upload_time'].toDate(),
+        review : reviewData!['review'],
+        star : reviewData['star'],
+        uid: reviewData['uid'],
+        uploadTime : reviewData['upload_time'].toDate(),
     );
   }
 

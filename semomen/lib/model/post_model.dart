@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostModel{
+  String postId;
   String uid;
   List<dynamic> career;
   DateTime dateTime;
@@ -19,6 +20,7 @@ class PostModel{
 
 
   PostModel({
+    required this.postId,
     required this.uid,
     required this.career,
     required this.dateTime,
@@ -40,8 +42,9 @@ class PostModel{
     final postData = postDoc.data() as Map<String, dynamic>?;
 
     return PostModel(
-      uid: postDoc.id,
-      career : postData!['career'],
+      postId: postDoc.id,
+      uid: postData!['uid'],
+      career : postData['career'],
       //dateTime : postData['upload_time'].toDate() ?? DateTime.now(),
       dateTime : postData['date_time'].toDate() ?? DateTime.now(),
       lecture : postData['guides']['lecture'] ?? [],
