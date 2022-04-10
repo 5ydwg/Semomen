@@ -137,7 +137,6 @@ class _GuideInfoPageState extends State<GuideInfoPage> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: mainBlueGreen),
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ReviewPage()));
                     },
                     child: Text('더보기')),
               ),

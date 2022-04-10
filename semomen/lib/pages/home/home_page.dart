@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +9,7 @@ import 'package:semomen/model/post_model.dart';
 import 'package:semomen/pages/detail_guide_info_page.dart';
 import 'package:semomen/pages/guide_info_page.dart';
 import 'package:semomen/providers/mentee_provider.dart';
+import 'package:semomen/providers/post_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        centerTitle: true,
         title: Text('세상의 모든 멘토',style: TextStyle(
           fontWeight: FontWeight.bold,
           foreground: Paint()..shader = LinearGradient(colors: <Color>[
@@ -39,10 +40,10 @@ class _HomePageState extends State<HomePage> {
           Divider(
             thickness: 5.0,
           ),
-          _recommendedGuide(size),  // 추천 가이드
-          Divider(
-            thickness: 5.0,
-          ),
+          // _recommendedGuide(size),  // 추천 가이드
+          // Divider(
+          //   thickness: 5.0,
+          // ),
           _popularGuide(size),  // 인기 가이드
           Divider(
             thickness: 5.0,
@@ -62,39 +63,74 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _jobOfThisWeek(Size size) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        Text('이 주의 직업', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-        SizedBox(height: 8.0,),
-        Container(
-          padding: EdgeInsets.all(8.0),
-          height: size.width * 0.625,
-          width: size.width,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4.0), color: Colors.grey),
-          child: Stack(
-            children: [
-              Positioned(
-                right: 0.0,
-                bottom: 0.0,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.white),
-                  onPressed: () {},
-                  child: Text(
-                    '자세히',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],),
+    return Consumer<PostProvider>(
+      builder: (context, postProvider, child) => FutureBuilder<PostModel>(
+          future: postProvider.getJobOfThisWeek(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return SizedBox(
+                  height: size.width * 0.625,
+                  width: size.width,
+                  child: Text("Something went wrong"));
+            }
+            if (snapshot.hasData && snapshot.data!.uid.isEmpty) {
+              return SizedBox(
+                  height: size.width * 0.625,
+                  width: size.width,
+                  child: Text("Document does not exist!!"));
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('이 주의 직업', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                    SizedBox(height: 8.0,),
+                    Container(
+                      height: size.width * 0.625,
+                      width: size.width,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.0), color: mainBlueGrotto,
+                        image: DecorationImage(
+                          onError: (object, stackTrace) {
+
+                          },
+                          image: NetworkImage(
+                              snapshot.data?.jobImgUrl ?? ''
+                          ),
+                        ),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            right: 8.0,
+                            bottom: 0.0,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(primary: Colors.white),
+                              onPressed: () {},
+                              child: Text(
+                                '자세히',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],),
+              );
+            }
+            return Container(
+                padding: EdgeInsets.all(8.0),
+                height: size.width * 0.625,
+                width: size.width,
+                child: Center(child: CircularProgressIndicator()));
+          }
+      ),
     );
   }
+
   Widget _recommendedGuide(Size size) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -150,39 +186,80 @@ class _HomePageState extends State<HomePage> {
       ],),
     );
   }
+
   Widget _popularGuide(Size size) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('인기 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-          SizedBox(height: 8.0,),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            height: size.width * 0.625,
-            width: size.width,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4.0), color: Colors.grey),
-            child: Stack(
-              children: [
-                Positioned(
-                  right: 0.0,
-                  bottom: 0.0,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.white),
-                    onPressed: () {},
-                    child: Text(
-                      '자세히',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ),
-              ],
+    return Consumer<PostProvider>(
+      builder: (context, postProvider, child) => Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('인기 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+            SizedBox(height: 8.0,),
+            FutureBuilder<DocumentSnapshot>(
+                future: postProvider.getPopularPost(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Container(
+                        padding: EdgeInsets.all(8.0),
+                        height: size.width * 0.625,
+                        width: size.width,
+                        color: Colors.grey,
+                        child: Text("Something went wrong"));
+                  }
+                  if (snapshot.hasData && !snapshot.data!.exists) {
+                    return Container(
+                        padding: EdgeInsets.all(8.0),
+                        height: size.width * 0.625,
+                        width: size.width,
+                        color: Colors.grey,
+                        child: Text("Document does not exist!!"));
+                  }
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Stack(
+                      children: [
+                        Container(
+                          height: size.width * 0.625,
+                          width: size.width,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
+                            image: DecorationImage(
+                              onError: (object, stackTrace) {
+
+                              },
+                              image: NetworkImage(
+                                  snapshot.data!.get('job_img_url')
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Positioned(
+                          right: 8.0,
+                          bottom: 0.0,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(primary: Colors.white),
+                            onPressed: () {},
+                            child: Text(
+                              '자세히',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return Container(
+                      padding: EdgeInsets.all(8.0),
+                      height: size.width * 0.625,
+                      width: size.width,
+                      child: Center(child: CircularProgressIndicator()));
+                }
             ),
-          ),
-        ],),
-    );
+          ],
+        ),
+      ));
   }
   Widget _newGuide(Size size) {
     return Padding(
@@ -352,9 +429,18 @@ class _HomePageState extends State<HomePage> {
                                       Container(
                                         height: size.width * 0.5 * 0.625,
                                         alignment: Alignment.center,
-                                        child: Image.network(post.jobImgUrl,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
+                                          image: DecorationImage(
                                             fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) => Image.network('https://cdn.pixabay.com/photo/2018/09/22/11/34/board-3695073_1280.jpg'),),
+                                            onError: (object, stackTrace) {
+
+                                            },
+                                            image: NetworkImage(
+                                                postSnapshot.data?.get('job_img_url') ?? '',
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),

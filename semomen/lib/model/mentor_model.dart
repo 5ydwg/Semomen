@@ -1,13 +1,13 @@
 class MentorModel{
   String uid;
-  List<String> menteeUid;
+  List<Map<String, dynamic>> menteeList;
   List<String> career;
   String introTitle;
   String intro;
 
   MentorModel({
     required this.uid,
-    required this.menteeUid,
+    required this.menteeList,
     required this.career,
     required this.introTitle,
     required this.intro,
@@ -15,7 +15,7 @@ class MentorModel{
 
   Map<String, dynamic> toJson() => {
     'uid':uid,
-    'mentee_uid':menteeUid,
+    'mentee_list':menteeList,
     'career':career,
     'intro_title':introTitle,
     'intro':intro,
@@ -23,7 +23,7 @@ class MentorModel{
 
   MentorModel.fromJson(Map<String, dynamic> json) :
         uid = json['uid'] ?? '',
-        menteeUid = json['mentee_uid'] ?? [],
+        menteeList = json['mentee_list'] ?? [],
         career = json['career'] ?? [],
         introTitle = json['intro_title'] ?? '',
         intro = json['intro'] ?? '';

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PostModel{
   String uid;
   List<dynamic> career;
-  //DateTime dateTime;
+  DateTime dateTime;
   //Map<String, dynamic> guides;
   List<dynamic> lecture;
   List<dynamic> major;
@@ -14,13 +14,14 @@ class PostModel{
   String jobDesc;
   String jobImgUrl;
   String jobVideoUrl;
+  String profileImg;
   String userName;
 
 
   PostModel({
     required this.uid,
     required this.career,
-    //required this.dateTime,
+    required this.dateTime,
     //required this.guides,
     required this.lecture,
     required this.major,
@@ -31,27 +32,28 @@ class PostModel{
     required this.jobDesc,
     required this.jobImgUrl,
     required this.jobVideoUrl,
+    required this.profileImg,
     required this.userName,
   });
 
   factory PostModel.fromDoc(DocumentSnapshot postDoc) {
     final postData = postDoc.data() as Map<String, dynamic>?;
 
-
     return PostModel(
       uid: postDoc.id,
       career : postData!['career'],
-      //dateTime : postData['date_time'],
-      //guides : postData['guides'],
-      lecture : postData['guides']['lecture'],
-      major : postData['guides']['major'],
-      vLog : postData['guides']['v_log'],
+      //dateTime : postData['upload_time'].toDate() ?? DateTime.now(),
+      dateTime : postData['date_time'].toDate() ?? DateTime.now(),
+      lecture : postData['guides']['lecture'] ?? [],
+      major : postData['guides']['major'] ?? [],
+      vLog : postData['guides']['v_log'] ?? [],
       intro : postData['intro'],
       introTitle : postData['intro_title'],
       job : postData['job'],
       jobDesc : postData['job_desc'],
-      jobImgUrl : postData['job_img_url'],
+      jobImgUrl : postData['job_img_url'] ,
       jobVideoUrl : postData['job_video_url'],
+      profileImg : postData['profile_img'] ?? '',
       userName : postData['user_name'],
     );
   }

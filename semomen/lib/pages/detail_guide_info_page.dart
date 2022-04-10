@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/post_model.dart';
+import 'package:semomen/model/review_model.dart';
+import 'package:semomen/pages/review_page.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class DetailGuideInfoPage extends StatefulWidget {
   final PostModel post;
+
   const DetailGuideInfoPage({Key? key, required this.post}) : super(key: key);
 
   @override
@@ -18,13 +23,15 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
 
   @override
   void initState() {
-    _youtubePlayerController = YoutubePlayerController(initialVideoId: YoutubePlayerController.convertUrlToId(widget.post.jobVideoUrl)!,
-    params: const YoutubePlayerParams(
-      loop: false,
-      color: 'transparent',
-      strictRelatedVideos: true,
-      showFullscreenButton: !kIsWeb,
-    ),
+    _youtubePlayerController = YoutubePlayerController(
+      initialVideoId:
+          YoutubePlayerController.convertUrlToId(widget.post.jobVideoUrl) ?? '',
+      params: const YoutubePlayerParams(
+        loop: false,
+        color: 'transparent',
+        strictRelatedVideos: true,
+        showFullscreenButton: !kIsWeb,
+      ),
     );
     super.initState();
   }
@@ -40,25 +47,60 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.black),
         title: Text(
-          '가이드 제목',
+          '가이드',
           style: TextStyle(color: Colors.black),
         ),
       ),
       body: ListView(
         children: [
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 18.0, horizontal: 12.0),
+            child: Text(
+              widget.post.introTitle,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+            ),
+          ),
+          widget.post.jobVideoUrl.isNotEmpty ? _detailVideo(size) : SizedBox(),
+          IntrinsicHeight(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '멘토 한마디',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.0),
+                        ),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        Text(widget.post.intro),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
           _jobIntroduction(size),
           Divider(
             height: 20.0,
           ),
-          _mentorInformation(),
+          _capabilitiesGuide(size),
+          Divider(
+            height: 20.0,
+          ),
+          _mentorInformation(size),
           Divider(
             height: 20.0,
           ),
           _review(size),
-          Divider(
-            height: 20.0,
-          ),
-          _capabilitiesGuide(size),
           Divider(
             height: 20.0,
           ),
@@ -67,14 +109,15 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
           //   height: 20.0,
           // ),
           //_recommendedBook(context, size),
-          SizedBox(height: 100.0,),
+          SizedBox(
+            height: 100.0,
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: mainNavyBlue,
-        onPressed: () {  },
+        onPressed: () {},
         child: Icon(Icons.chat_outlined),
-
       ),
     );
   }
@@ -90,72 +133,103 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
           ),
         ),
-        _detailVideo(size),
-        IntrinsicHeight(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.post.introTitle,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      Text(widget.post.intro),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
+        Container(
+          height: 500.0,
+          color: mainBabyBlue,
+          alignment: Alignment.center,
+          child: Text('blog'),
         ),
       ],
     );
   }
+
+  double averageReviewScore(List<QueryDocumentSnapshot<Object?>> reviews) {
+    List<int> star = reviews.map((e) {
+      int star = e.get('star');
+      return star;
+    }).toList();
+    int sum = star.reduce((value, element) => value + element);
+    double average = (sum / reviews.length).toDouble();
+
+    return double.parse(average.toStringAsFixed(1));  // 소수점 1자리까지 출력
+  }
+
 
   Widget _review(Size size) {
-    return Column(
-      children: [
-        Text(
-          '리뷰',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-        ),
-        Text(
-          '⭐⭐⭐⭐⭐',
-          style:
-              TextStyle(color: Colors.yellow[600], fontWeight: FontWeight.bold),
-        ),
-        Text(
-          '5.0',
-          style:
-              TextStyle(color: Colors.yellow[600], fontWeight: FontWeight.bold),
-        ),
-        Text(
-          '155개의 평가',
-          style: TextStyle(
-            color: Colors.grey,
-          ),
-        ),
-        SizedBox(
-          width: size.width * 0.3,
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: mainBlueGreen),
-              onPressed: () {},
-              child: Text('더보기')),
-        ),
-      ],
-    );
+    return FutureBuilder<QuerySnapshot>(
+        future: FirebaseFirestore.instance
+            .collection('posts')
+            .doc(widget.post.uid)
+            .collection('reviews')
+            .where('uid',
+                isNotEqualTo:
+                    widget.post.uid.substring(0, widget.post.uid.length - 1))
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong");
+          }
+          if (snapshot.hasData && !snapshot.data!.docs.isNotEmpty) {
+            return Text("Document does not exist");
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            final reviews = snapshot.data!.docs;  // 해당 포스트의 모든 리뷰(포스트 작성자는 제외)
+            final double averageScore = averageReviewScore(reviews);
+            
+            List<ReviewModel> postReviews =
+                reviews.map((e) => ReviewModel.fromDoc(e) ).toList();
+            return Column(
+              children: [
+                Text(
+                  '리뷰',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                ),
+                _reviewStars(averageScore),
+                Text(
+                  '${averageScore}',
+                  style: TextStyle(
+                      color: Colors.yellow[600], fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '${reviews.length}개의 평가',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+                SizedBox(
+                  width: size.width * 0.3,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: mainBlueGreen),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ReviewPage(
+                                  reviews: postReviews,
+                                )));
+                      },
+                      child: Text('더보기')),
+                ),
+              ],
+            );
+          }
+
+          return Text("loading");
+        });
   }
 
+  Widget _reviewStars(double averageScore) {
+    return RatingBar.builder(
+        initialRating: averageScore,
+        allowHalfRating: true,
+        itemCount: 5,
+        ignoreGestures: true,
+        itemSize: 24.0,
+        itemBuilder: (context, _) => Icon(Icons.star, color: Colors.yellow[600]),
+        onRatingUpdate: (rating) {
+          debugPrint(rating.toString());
+        });
+  }
 
-  Widget _mentorInformation() {
+  Widget _mentorInformation(Size size) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -169,9 +243,23 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
             padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 24.0,
-                  backgroundColor: Colors.grey,
+                ClipOval(
+                  child: Container(
+                    width: size.width * 0.2,
+                    height: size.width * 0.2,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      color: Colors.grey,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        onError: (object, stackTrace) {},
+                        image: NetworkImage(
+                          widget.post.profileImg,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(
                   width: 12.0,
@@ -196,10 +284,13 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ...widget.post.career.map((e) => Text('- ' + e, style: TextStyle(color: Colors.grey),)),
+              ...widget.post.career.map((e) => Text(
+                    '- ' + e,
+                    style: TextStyle(color: Colors.grey),
+                  )),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -212,6 +303,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
       return _capabilitiesGuideItem(size, value, content);
     }).toList();
   }
+
   List<ExpansionPanelRadio> major(Size size) {
     final major = widget.post.major.toList();
     return major.asMap().entries.map((entry) {
@@ -220,6 +312,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
       return _capabilitiesGuideItem(size, value, content);
     }).toList();
   }
+
   List<ExpansionPanelRadio> vLog(Size size) {
     final vLog = widget.post.vLog.toList();
     return vLog.asMap().entries.map((entry) {
@@ -243,7 +336,10 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text('추천 강의', style: TextStyle(fontWeight: FontWeight.bold),),
+            child: Text(
+              '추천 강의',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           ExpansionPanelList.radio(
             expandedHeaderPadding: EdgeInsets.all(0.0),
@@ -254,7 +350,10 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
           Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text('추천 전공', style: TextStyle(fontWeight: FontWeight.bold),),
+            child: Text(
+              '추천 전공',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           ExpansionPanelList.radio(
             expandedHeaderPadding: EdgeInsets.all(0.0),
@@ -265,7 +364,10 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
           Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text('추천 브이로그', style: TextStyle(fontWeight: FontWeight.bold),),
+            child: Text(
+              '추천 브이로그',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           ExpansionPanelList.radio(
             expandedHeaderPadding: EdgeInsets.all(0.0),
@@ -328,7 +430,9 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                       width: size.width * 0.5,
                       child: Text(
                         content['url'],
-                        style: TextStyle(color: Colors.blue, overflow: TextOverflow.ellipsis),
+                        style: TextStyle(
+                            color: Colors.blue,
+                            overflow: TextOverflow.ellipsis),
                       ),
                     ),
                   ],
@@ -357,7 +461,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
     );
   }
 
-  // use youtube_payer_iframe 2.2.2
+  // use youtube_player_iframe 2.2.2
   Container _detailVideo(Size size) {
     return Container(
       width: size.width,
@@ -406,7 +510,9 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                               borderRadius: BorderRadius.circular(4.0),
                               color: mainBlueGreen),
                         ),
-                        SizedBox(width: 8.0,),
+                        SizedBox(
+                          width: 8.0,
+                        ),
                         Flexible(
                           flex: 1,
                           child: Column(
@@ -416,10 +522,19 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                                 'Title',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              Text('Author',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12.0),),
-                              SizedBox(height: 8.0,),
-                              Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-                                  "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                              Text(
+                                'Author',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    fontSize: 12.0),
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              Text(
+                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+                                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                                 maxLines: 4,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -465,7 +580,9 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                               borderRadius: BorderRadius.circular(4.0),
                               color: mainBlueGreen),
                         ),
-                        SizedBox(width: 8.0,),
+                        SizedBox(
+                          width: 8.0,
+                        ),
                         Flexible(
                           flex: 1,
                           child: Column(
@@ -475,10 +592,19 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                                 'Title',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              Text('Author',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12.0),),
-                              SizedBox(height: 8.0,),
-                              Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-                                  "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                              Text(
+                                'Author',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    fontSize: 12.0),
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              Text(
+                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+                                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                                 maxLines: 4,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -524,7 +650,9 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                               borderRadius: BorderRadius.circular(4.0),
                               color: mainBlueGreen),
                         ),
-                        SizedBox(width: 8.0,),
+                        SizedBox(
+                          width: 8.0,
+                        ),
                         Flexible(
                           flex: 1,
                           child: Column(
@@ -534,10 +662,19 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                                 'Title',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              Text('Author',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12.0),),
-                              SizedBox(height: 8.0,),
-                              Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-                                  "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                              Text(
+                                'Author',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    fontSize: 12.0),
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              Text(
+                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+                                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                                 maxLines: 4,
                                 overflow: TextOverflow.ellipsis,
                               ),
