@@ -6,9 +6,11 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/post_model.dart';
+import 'package:semomen/pages/capability_gude_page.dart';
 import 'package:semomen/pages/review_page.dart';
 import 'package:semomen/providers/review_provider.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class DetailGuideInfoPage extends StatefulWidget {
   final PostModel post;
@@ -68,41 +70,61 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
             ),
           ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${widget.post.userName} 멘토',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.grey),
+                ),
+                Text(
+                  '2022년 3월 29일',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
           widget.post.jobVideoUrl.isNotEmpty ? _detailVideo(size) : SizedBox(),
           IntrinsicHeight(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0,right: 8.0,top:12.0,bottom: 24.0),
+                        child: Text(
                           '멘토 한마디',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16.0),
                         ),
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                        Text(widget.post.intro),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(widget.post.intro),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Divider(),
           ),
           _jobIntroduction(size),
           Divider(
             height: 20.0,
           ),
-          _capabilitiesGuide(size),
-          Divider(
-            height: 20.0,
-          ),
+         // _capabilitiesGuide(size),
           _mentorInformation(size),
           Divider(
             height: 20.0,
@@ -118,29 +140,44 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: mainNavyBlue,
-        onPressed: () {},
+        onPressed: () {
+          String desc = widget.post.jobDesc;
+          print(desc);
+        },
         child: Icon(Icons.chat_outlined),
       ),
     );
   }
 
   Widget _jobIntroduction(Size size) {
+    String desc = widget.post.jobDesc;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text(
-            '직업 소개',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '직업 소개',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CapabilityGuidePage(post: widget.post,)));
+                },
+                child: Text(
+                  '역량 가이드 보기',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                ),
+              ),
+            ],
           ),
         ),
-        Container(
-          height: 500.0,
-          color: mainBabyBlue,
-          alignment: Alignment.center,
-          child: Text('blog'),
-        ),
+        Html(
+          data: desc,
+        ), // use flutter_html: ^2.2.1
       ],
     );
   }
@@ -153,43 +190,43 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
     int sum = star.reduce((value, element) => value + element);
     double average = (sum / reviews.length).toDouble();
 
-    return double.parse(average.toStringAsFixed(1));  // 소수점 1자리까지 출력
+    return double.parse(average.toStringAsFixed(1)); // 소수점 1자리까지 출력
   }
 
   Widget _reviews(Size size) {
     return Consumer<ReviewProvider>(
-      builder: (context, reviewProvider, child) => Column(
-        children: [
-          Text(
-            '리뷰',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-          ),
-          _reviewStars(reviewProvider.getRating()),
-          Text(
-            '${reviewProvider.getRating()}',
-            style: TextStyle(
-                color: Colors.yellow[600], fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '${reviewProvider.reviews.length}개의 평가',
-            style: TextStyle(
-              color: Colors.grey,
-            ),
-          ),
-          SizedBox(
-            width: size.width * 0.3,
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: mainBlueGreen),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ReviewPage(
-                        postId: widget.post.postId,
-                      )));
-                },
-                child: Text('더보기')),
-          ),
-        ],
-      ));
+        builder: (context, reviewProvider, child) => Column(
+              children: [
+                Text(
+                  '리뷰',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                ),
+                _reviewStars(reviewProvider.getRating()),
+                Text(
+                  '${reviewProvider.getRating()}',
+                  style: TextStyle(
+                      color: Colors.yellow[600], fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '${reviewProvider.reviews.length}개의 평가',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+                SizedBox(
+                  width: size.width * 0.3,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: mainBlueGreen),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ReviewPage(
+                                  postId: widget.post.postId,
+                                )));
+                      },
+                      child: Text('더보기')),
+                ),
+              ],
+            ));
   }
 
   Widget _reviewStars(double averageScore) {
@@ -199,7 +236,8 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
         itemCount: 5,
         ignoreGestures: true,
         itemSize: 24.0,
-        itemBuilder: (context, _) => Icon(Icons.star, color: Colors.yellow[600]),
+        itemBuilder: (context, _) =>
+            Icon(Icons.star, color: Colors.yellow[600]),
         onRatingUpdate: (rating) {
           debugPrint(rating.toString());
         });
@@ -270,173 +308,6 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
       ],
     );
   }
-
-  List<ExpansionPanelRadio> lecture(Size size) {
-    final lecture = widget.post.lecture.toList();
-    return lecture.asMap().entries.map((entry) {
-      int value = entry.key;
-      dynamic content = entry.value;
-      return _capabilitiesGuideItem(size, value, content);
-    }).toList();
-  }
-
-  List<ExpansionPanelRadio> major(Size size) {
-    final major = widget.post.major.toList();
-    return major.asMap().entries.map((entry) {
-      int value = entry.key;
-      dynamic content = entry.value;
-      return _capabilitiesGuideItem(size, value, content);
-    }).toList();
-  }
-
-  List<ExpansionPanelRadio> vLog(Size size) {
-    final vLog = widget.post.vLog.toList();
-    return vLog.asMap().entries.map((entry) {
-      int value = entry.key;
-      dynamic content = entry.value;
-      return _capabilitiesGuideItem(size, value, content);
-    }).toList();
-  }
-
-  Widget _capabilitiesGuide(Size size) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              '역량 가이드',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              '추천 강의',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          ExpansionPanelList.radio(
-            expandedHeaderPadding: EdgeInsets.all(0.0),
-            children: [
-              ...lecture(size),
-            ],
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              '추천 전공',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          ExpansionPanelList.radio(
-            expandedHeaderPadding: EdgeInsets.all(0.0),
-            children: [
-              ...major(size),
-            ],
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              '추천 브이로그',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          ExpansionPanelList.radio(
-            expandedHeaderPadding: EdgeInsets.all(0.0),
-            children: [
-              ...vLog(size),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  ExpansionPanelRadio _capabilitiesGuideItem(Size size, int index, dynamic content) {
-    return ExpansionPanelRadio(
-      value: index,
-      headerBuilder: (context, isExpanded) {
-        return IntrinsicHeight(
-          child: Row(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 50.0,
-                    height: 50.0,
-                    margin: EdgeInsets.all(12.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        color: mainBlueGreen),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${index + 1}',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: size.width * 0.5,
-                      child: Text(
-                        content['title'],
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    SizedBox(
-                      width: size.width * 0.5,
-                      child: Text(
-                        content['desc'],
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    SizedBox(
-                      width: size.width * 0.5,
-                      child: Text(
-                        content['url'],
-                        style: TextStyle(
-                            color: Colors.blue,
-                            overflow: TextOverflow.ellipsis),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        );
-      },
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   // use youtube_player_iframe 2.2.2
   Container _detailVideo(Size size) {
     return Container(
