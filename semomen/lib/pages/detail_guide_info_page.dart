@@ -26,6 +26,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
 
   @override
   void initState() {
+    context.read<ReviewProvider>().getReviews(postId: widget.post.postId);
     _youtubePlayerController = YoutubePlayerController(
       initialVideoId:
           YoutubePlayerController.convertUrlToId(widget.post.jobVideoUrl) ?? '',
@@ -36,7 +37,6 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
         showFullscreenButton: !kIsWeb,
       ),
     );
-    context.read<ReviewProvider>().getReviews(postId: widget.post.postId);
     super.initState();
   }
 
@@ -82,7 +82,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                       fontWeight: FontWeight.bold, color: Colors.grey),
                 ),
                 Text(
-                  '2022년 3월 29일',
+                  '2022년 4월 11일',
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.grey),
                 ),
@@ -141,8 +141,6 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: mainNavyBlue,
         onPressed: () {
-          String desc = widget.post.jobDesc;
-          print(desc);
         },
         child: Icon(Icons.chat_outlined),
       ),

@@ -221,14 +221,14 @@ class ReviewPage extends StatelessWidget {
     return Positioned(
         bottom: 30.0,
         child: SizedBox(
-            width: size.width,
+            width: size.width - 24.0,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: mainNavyBlue,
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CreateReviewPage()));
+                      builder: (context) => CreateReviewPage(postId : postId)));
                 },
                 child: Text('작성하기'))));
   }

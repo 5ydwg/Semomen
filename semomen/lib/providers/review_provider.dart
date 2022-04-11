@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/review_model.dart';
 import 'package:semomen/repositories/review_repository.dart';
 
@@ -38,6 +40,18 @@ class ReviewProvider extends ChangeNotifier {
     return num / _reviews.length;  // score 점수를 준 인원 수 / 전체 리뷰의 수
   }
 
+  Future<void> addReview({required String text, required double rating, required String postId}) async {
+    Map<String, dynamic> test = ReviewModel(
+        review: text,
+        star: rating.toInt(),
+        uid: FirebaseAuth.instance.currentUser!.uid,
+        uploadTime: DateTime.now()).toJson();
+
+    postRef.doc(postId).collection('reviews').add(test);
+    _reviews = await reviewRepository.getReviews(postId: postId);
+
+    notifyListeners();
+  }
 
 
 }

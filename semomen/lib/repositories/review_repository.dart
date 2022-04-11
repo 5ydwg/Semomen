@@ -9,8 +9,7 @@ class ReviewRepository {
       final QuerySnapshot reviews = await FirebaseFirestore.instance.collection('posts').doc(postId).collection('reviews')
           .where('uid',
           isNotEqualTo:
-          postId.substring(0, postId.length - 1)).get();
-
+          postId.substring(0, postId.length - 1),).get();
       return reviews.docs.map((e) => ReviewModel.fromDoc(e)).toList();
     } on FirebaseException catch (e) {
       throw e;

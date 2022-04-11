@@ -1,11 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
+import 'package:semomen/constants/db_constants.dart';
+import 'package:semomen/model/review_model.dart';
+import 'package:semomen/providers/review_provider.dart';
+import 'package:provider/provider.dart';
 import '../constants/constant.dart';
 
 class CreateReviewPage extends StatefulWidget {
-  const CreateReviewPage({Key? key}) : super(key: key);
+  final String postId;
+  const CreateReviewPage({Key? key, required this.postId}) : super(key: key);
 
   @override
   _CreateReviewPageState createState() => _CreateReviewPageState();
@@ -13,6 +19,7 @@ class CreateReviewPage extends StatefulWidget {
 
 class _CreateReviewPageState extends State<CreateReviewPage> {
   TextEditingController _reviewTextController = TextEditingController();
+  double reviewRating = 5.0;
   @override
   void dispose() {
     _reviewTextController.dispose();
@@ -49,7 +56,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                       itemCount: 5,
                         itemBuilder: (context, _) => Icon(Icons.star, color: Colors.yellow[600], size: 36.0,),
                         onRatingUpdate: (rating) {
-                          debugPrint(rating.toString());
+                          reviewRating = rating;
                         }),
                   ),
                 ),
@@ -92,13 +99,17 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
     return Positioned(
         bottom: 30.0,
         child: SizedBox(
-            width: size.width,
+            width: size.width - 24.0,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: mainNavyBlue,
                 ),
                 onPressed: () {
+                  debugPrint(reviewRating.toString());
                   debugPrint(_reviewTextController.text);
+                  context.read<ReviewProvider>().addReview(text: _reviewTextController.text, rating: reviewRating, postId: widget.postId);
+                  Navigator.pop(context);
                 }, child: Text('완료'))));
   }
+
 }

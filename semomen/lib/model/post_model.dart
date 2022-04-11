@@ -53,7 +53,7 @@ class PostModel{
       intro : postData['intro'],
       introTitle : postData['intro_title'],
       job : postData['job'],
-      jobDesc : postData['job_desc'],
+      jobDesc : postData['job_desc'] ?? '',
       jobImgUrl : postData['job_img_url'] ,
       jobVideoUrl : postData['job_video_url'],
       profileImg : postData['profile_img'] ?? '',
