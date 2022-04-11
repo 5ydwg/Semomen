@@ -26,7 +26,6 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
 
   @override
   void initState() {
-    context.read<ReviewProvider>().getReviews(postId: widget.post.postId);
     _youtubePlayerController = YoutubePlayerController(
       initialVideoId:
           YoutubePlayerController.convertUrlToId(widget.post.jobVideoUrl) ?? '',
@@ -192,39 +191,47 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
   }
 
   Widget _reviews(Size size) {
-    return Consumer<ReviewProvider>(
-        builder: (context, reviewProvider, child) => Column(
-              children: [
-                Text(
-                  '리뷰',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                ),
-                _reviewStars(reviewProvider.getRating()),
-                Text(
-                  '${reviewProvider.getRating()}',
-                  style: TextStyle(
-                      color: Colors.yellow[600], fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${reviewProvider.reviews.length}개의 평가',
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-                SizedBox(
-                  width: size.width * 0.3,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: mainBlueGreen),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ReviewPage(
+    return FutureBuilder<void>(
+        future: context.read<ReviewProvider>().getReviews(postId: widget.post.postId),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.done) {
+            return Consumer<ReviewProvider>(
+                builder: (context, reviewProvider, child) => Column(
+                  children: [
+                    Text(
+                      '리뷰',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                    ),
+                    _reviewStars(reviewProvider.getRating()),
+                    Text(
+                      '${reviewProvider.getRating()}',
+                      style: TextStyle(
+                          color: Colors.yellow[600], fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '${reviewProvider.reviews.length}개의 평가',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(
+                      width: size.width * 0.3,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(primary: mainBlueGreen),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ReviewPage(
                                   postId: widget.post.postId,
                                 )));
-                      },
-                      child: Text('더보기')),
-                ),
-              ],
-            ));
+                          },
+                          child: Text('더보기')),
+                    ),
+                  ],
+                ));
+          }
+          return CircularProgressIndicator();
+        }
+    );
   }
 
   Widget _reviewStars(double averageScore) {
@@ -322,235 +329,4 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
     );
   }
 
-  Column _recommendedBook(BuildContext context, Size size) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text(
-            '추천 도서',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-          ),
-        ),
-        ExpansionPanelList.radio(
-          expandedHeaderPadding: EdgeInsets.all(0.0),
-          elevation: 0.0,
-          dividerColor: Theme.of(context).scaffoldBackgroundColor,
-          children: [
-            ExpansionPanelRadio(
-              value: 0,
-              canTapOnHeader: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              headerBuilder: (context, isExpanded) {
-                return IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: size.width * 0.2,
-                          height: size.width * 0.2 * 1.4,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.0),
-                              color: mainBlueGreen),
-                        ),
-                        SizedBox(
-                          width: 8.0,
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Title',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Author',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                    fontSize: 12.0),
-                              ),
-                              SizedBox(
-                                height: 8.0,
-                              ),
-                              Text(
-                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-                                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                                maxLines: 4,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            ExpansionPanelRadio(
-              value: 1,
-              canTapOnHeader: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              headerBuilder: (context, isExpanded) {
-                return IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: size.width * 0.2,
-                          height: size.width * 0.2 * 1.4,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.0),
-                              color: mainBlueGreen),
-                        ),
-                        SizedBox(
-                          width: 8.0,
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Title',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Author',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                    fontSize: 12.0),
-                              ),
-                              SizedBox(
-                                height: 8.0,
-                              ),
-                              Text(
-                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-                                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                                maxLines: 4,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            ExpansionPanelRadio(
-              value: 2,
-              canTapOnHeader: true,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              headerBuilder: (context, isExpanded) {
-                return IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: size.width * 0.2,
-                          height: size.width * 0.2 * 1.4,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.0),
-                              color: mainBlueGreen),
-                        ),
-                        SizedBox(
-                          width: 8.0,
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Title',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Author',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                    fontSize: 12.0),
-                              ),
-                              SizedBox(
-                                height: 8.0,
-                              ),
-                              Text(
-                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-                                "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                                maxLines: 4,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
 }
