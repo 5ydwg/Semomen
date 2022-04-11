@@ -152,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           ClipOval(
               child: Image.network(
-                user.profileImg,
+                user.profileImg != '' ? user.profileImg : 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png',
                 fit: BoxFit.cover,
                 width: size.width * 0.2,
                 height: size.width * 0.2,

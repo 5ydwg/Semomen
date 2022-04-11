@@ -23,7 +23,7 @@ class DetailGuideInfoPage extends StatefulWidget {
 
 class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
   late YoutubePlayerController _youtubePlayerController;
-
+  late String profileImageUrl;
   @override
   void initState() {
     _youtubePlayerController = YoutubePlayerController(
@@ -36,6 +36,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
         showFullscreenButton: !kIsWeb,
       ),
     );
+    profileImageUrl = widget.post.profileImg;
     super.initState();
   }
 
@@ -262,21 +263,33 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
             padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
-                ClipOval(
+                widget.post.profileImg != '' ? ClipOval(
                   child: Container(
                     width: size.width * 0.2,
                     height: size.width * 0.2,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4.0),
-                      color: Colors.grey,
+                      color: Colors.grey[200],
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        onError: (object, stackTrace) {},
+                        onError: (object, stackTrace) {
+
+                        },
                         image: NetworkImage(
                           widget.post.profileImg,
                         ),
                       ),
+                    ),
+                  ),
+                ) : ClipOval(
+                  child: Container(
+                    width: size.width * 0.2,
+                    height: size.width * 0.2,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      color: Colors.grey[200],
                     ),
                   ),
                 ),

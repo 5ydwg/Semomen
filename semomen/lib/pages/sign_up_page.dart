@@ -424,7 +424,16 @@ class _SignUpPageState extends State<SignUpPage> {
     required String job,
     required String phoneNumber,}) async{
     Map<String, dynamic> _userMap =
-      UserModel(uid: uid, userName: userName, email: email, isMentor:false, isMentee:true, profileImg:'',phoneNumber: phoneNumber, birth: birth, job: job).toJson();
+      UserModel(
+          uid: uid,
+          userName: userName,
+          email: email,
+          isMentor:false,
+          isMentee:true,
+          profileImg:'https://cdn-icons.flaticon.com/png/512/3177/premium/3177440.png?token=exp=1649682863~hmac=1d3efd8f85cf2b0e08d4ff60473674f5',
+          phoneNumber: phoneNumber,
+          birth: birth,
+          job: job).toJson();
 
     return await users.doc(uid).set(_userMap)
         .then((value) {

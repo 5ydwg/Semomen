@@ -43,7 +43,7 @@ class UserModel{
       birth : userData['birth'],
       isMentor : userData['is_mentor'],
       isMentee : userData['is_mentee'],
-      profileImg : userData['profile_img'],
+      profileImg : userData['profile_img'] ?? '',
       job : userData['job'],
       email : userData['email'],
       phoneNumber : userData['phone_number'],

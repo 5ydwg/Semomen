@@ -39,7 +39,7 @@ class ReviewPage extends StatelessWidget {
                     Divider(
                       height: 40.0,
                     ),
-                    _reviewList(reviewProvider), // 리뷰 리스트
+                    _reviewList(reviewProvider, size), // 리뷰 리스트
                   ],
                 ),
               ),
@@ -140,7 +140,7 @@ class ReviewPage extends StatelessWidget {
     );
   }
 
-  Widget _reviewList(ReviewProvider reviewProvider) {
+  Widget _reviewList(ReviewProvider reviewProvider, Size size) {
     return Column(
       children: [
         Padding(
@@ -167,12 +167,26 @@ class ReviewPage extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: 20.0,
-                          backgroundColor: Colors.grey,
+                        ClipOval(
+                          child: Container(
+                            width: size.width * 0.1,
+                            height: size.width * 0.1,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.0),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                onError: (object, stackTrace) {},
+                                image: NetworkImage(
+                                  review.profileImg,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                         SizedBox(
-                          width: 8.0,
+                          width: 12.0,
                         ),
                         Flexible(
                           flex: 1,
@@ -180,7 +194,7 @@ class ReviewPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'user name',
+                                review.userName,
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               Padding(

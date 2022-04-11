@@ -99,6 +99,7 @@ class _HomePageState extends State<HomePage> {
                           image: NetworkImage(
                               snapshot.data?.jobImgUrl ?? ''
                           ),
+                          fit: BoxFit.cover
                         ),
                       ),
                       child: Stack(
@@ -108,7 +109,9 @@ class _HomePageState extends State<HomePage> {
                             bottom: 0.0,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(primary: Colors.white),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: snapshot.data!)));
+                              },
                               child: Text(
                                 '자세히',
                                 style: TextStyle(color: Colors.black),
@@ -128,62 +131,6 @@ class _HomePageState extends State<HomePage> {
                 child: Center(child: CircularProgressIndicator()));
           }
       ),
-    );
-  }
-
-  Widget _recommendedGuide(Size size) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        Text('추천 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-        SizedBox(height: 8.0,),
-        SizedBox(
-          height: size.width * 0.6 * 0.625,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: 5,
-            separatorBuilder: (context, index) => SizedBox(
-              width: 8.0,
-            ),
-            itemBuilder: (context, index) => GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => GuideInfoPage()));
-              },
-              child: Container(
-                width: size.width * 0.6,
-                height: size.width * 0.6 * 0.625,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    color: Colors.grey),
-                padding: EdgeInsets.all(8.0),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      bottom: 0.0,
-                      child: SizedBox(
-                        width: size.width * 0.6 * 0.25,
-                        height: size.width * 0.6 * 0.25 * 0.5,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style:
-                          ElevatedButton.styleFrom(primary: Colors.white),
-                          child: Text(
-                            '자세히',
-                            style:
-                            TextStyle(fontSize: 8.0, color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],),
     );
   }
 
@@ -216,6 +163,7 @@ class _HomePageState extends State<HomePage> {
                         child: Text("Document does not exist!!"));
                   }
                   if (snapshot.connectionState == ConnectionState.done) {
+                    PostModel post = PostModel.fromDoc(snapshot.data!);
                     return Stack(
                       children: [
                         Container(
@@ -229,18 +177,19 @@ class _HomePageState extends State<HomePage> {
 
                               },
                               image: NetworkImage(
-                                  snapshot.data!.get('job_img_url')
+                                  post.jobImgUrl
                               ),
                             ),
                           ),
                         ),
-
                         Positioned(
                           right: 8.0,
                           bottom: 0.0,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(primary: Colors.white),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: post)));
+                            },
                             child: Text(
                               '자세히',
                               style: TextStyle(color: Colors.black),
@@ -382,99 +331,104 @@ class _HomePageState extends State<HomePage> {
 
               if (snapshot.connectionState == ConnectionState.done) {
                 MenteeModel mentee = MenteeModel.fromJson(snapshot.data!.data() as Map<String, dynamic>);
-                return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('나의 구매 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-                          Icon(Icons.chevron_right),
-                        ],
-                      ),
-                      SizedBox(height: 8.0,),
-                      GridView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: mentee.programId.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, // 한 행에 보여줄 item 수
-                            childAspectRatio: 1 / 1.6, // item의 가로, 세로 비율
-                            mainAxisSpacing: 8.0, // 수직 Padding
-                            crossAxisSpacing: 8.0 // 수평 Padding
+                if(mentee.programId.isNotEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('나의 구매 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                            Icon(Icons.chevron_right),
+                          ],
                         ),
-                        itemBuilder: (context, index) => FutureBuilder<DocumentSnapshot>(
-                          future: postRef.doc(mentee.programId[index]).get(),
-                          builder: (context, postSnapshot) {
-                            if (postSnapshot.hasError) {
-                            return Text("Something went wrong");
-                            }
+                        SizedBox(height: 8.0,),
+                        GridView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: mentee.programId.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, // 한 행에 보여줄 item 수
+                              childAspectRatio: 1 / 1.6, // item의 가로, 세로 비율
+                              mainAxisSpacing: 8.0, // 수직 Padding
+                              crossAxisSpacing: 8.0 // 수평 Padding
+                          ),
+                          itemBuilder: (context, index) => FutureBuilder<DocumentSnapshot>(
+                              future: postRef.doc(mentee.programId[index]).get(),
+                              builder: (context, postSnapshot) {
+                                if (postSnapshot.hasError) {
+                                  return Text("Something went wrong");
+                                }
 
-                            if (postSnapshot.hasData && !postSnapshot.data!.exists) {
-                            return Text("Document does not exist!!");
-                            }
+                                if (postSnapshot.hasData && !postSnapshot.data!.exists) {
+                                  return Text("Document does not exist!!");
+                                }
 
-                            if (postSnapshot.connectionState == ConnectionState.done) {
-                              PostModel post = PostModel.fromDoc(postSnapshot.data!);
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: post,)));
-                                },
-                                child: Card(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: size.width * 0.5 * 0.625,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            onError: (object, stackTrace) {
+                                if (postSnapshot.connectionState == ConnectionState.done) {
+                                  PostModel post = PostModel.fromDoc(postSnapshot.data!);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: post,)));
+                                    },
+                                    child: Card(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height: size.width * 0.5 * 0.625,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                onError: (object, stackTrace) {
 
-                                            },
-                                            image: NetworkImage(
-                                                postSnapshot.data?.get('job_img_url') ?? '',
+                                                },
+                                                image: NetworkImage(
+                                                  postSnapshot.data?.get('job_img_url') ?? '',
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(post.job, style: TextStyle(fontWeight: FontWeight.bold),),
-                                            Text(post.userName, style: TextStyle(fontWeight: FontWeight.bold),),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(post.introTitle, style: TextStyle(fontWeight: FontWeight.bold),),
-                                            SizedBox(height: 12.0,),
-                                            Text(post.intro, style: TextStyle(color: Colors.grey), maxLines: 2,overflow: TextOverflow.ellipsis,),
-                                          ],
-                                        ),
-                                      ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(post.job, style: TextStyle(fontWeight: FontWeight.bold),),
+                                                Text(post.userName, style: TextStyle(fontWeight: FontWeight.bold),),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(post.introTitle, style: TextStyle(fontWeight: FontWeight.bold),),
+                                                SizedBox(height: 12.0,),
+                                                Text(post.intro, style: TextStyle(color: Colors.grey), maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                              ],
+                                            ),
+                                          ),
 
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                            return Text('Loading');
-                          }
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Text('Loading');
+                              }
+                          ),
                         ),
-                      ),
-                    ],),
-                );
+                      ],),
+                  );
+                } else {
+                  return SizedBox();
+                }
+
               }
 
               return Text("loading");

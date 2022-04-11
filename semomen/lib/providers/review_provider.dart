@@ -42,13 +42,16 @@ class ReviewProvider extends ChangeNotifier {
 
   Future<void> addReview({required String text, required double rating, required String postId}) async {
     String currentUid = FirebaseAuth.instance.currentUser!.uid;
-    Map<String, dynamic> test = ReviewModel(
+    Map<String, dynamic> review = ReviewModel(
+        profileImg: '',
         review: text,
         star: rating.toInt(),
         uid: currentUid,
-        uploadTime: DateTime.now()).toJson();
+        uploadTime: DateTime.now(),
+        userName: 'jspark',
+    ).toJson();
 
-    postRef.doc(postId).collection('reviews').doc(currentUid+'r').set(test);
+    postRef.doc(postId).collection('reviews').doc(currentUid+'r').set(review);
     _reviews = await reviewRepository.getReviews(postId: postId);
 
     notifyListeners();

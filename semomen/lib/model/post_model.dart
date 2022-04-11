@@ -54,7 +54,7 @@ class PostModel{
       introTitle : postData['intro_title'],
       job : postData['job'],
       jobDesc : postData['job_desc'] ?? '',
-      jobImgUrl : postData['job_img_url'] ,
+      jobImgUrl : postData['job_img_url']  ?? '',
       jobVideoUrl : postData['job_video_url'],
       profileImg : postData['profile_img'] ?? '',
       userName : postData['user_name'],
