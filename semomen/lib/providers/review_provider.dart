@@ -41,16 +41,24 @@ class ReviewProvider extends ChangeNotifier {
   }
 
   Future<void> addReview({required String text, required double rating, required String postId}) async {
+    String currentUid = FirebaseAuth.instance.currentUser!.uid;
     Map<String, dynamic> test = ReviewModel(
         review: text,
         star: rating.toInt(),
-        uid: FirebaseAuth.instance.currentUser!.uid,
+        uid: currentUid,
         uploadTime: DateTime.now()).toJson();
 
-    postRef.doc(postId).collection('reviews').add(test);
+    postRef.doc(postId).collection('reviews').doc(currentUid+'r').set(test);
     _reviews = await reviewRepository.getReviews(postId: postId);
 
     notifyListeners();
+  }
+
+  // post id를 통해 해당 post에 내가 작성한 review가 있는지 없는지를 반환하는 함수
+  Future<bool> existMyReview({required String postId}) async {
+    String currentUid = FirebaseAuth.instance.currentUser!.uid;
+    bool exist = _reviews.where((element) => element.uid == currentUid).isNotEmpty;
+    return exist;
   }
 
 

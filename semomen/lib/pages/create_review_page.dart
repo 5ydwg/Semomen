@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:semomen/constants/db_constants.dart';
-import 'package:semomen/model/review_model.dart';
 import 'package:semomen/providers/review_provider.dart';
 import 'package:provider/provider.dart';
 import '../constants/constant.dart';
@@ -107,8 +103,9 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                 onPressed: () {
                   debugPrint(reviewRating.toString());
                   debugPrint(_reviewTextController.text);
-                  context.read<ReviewProvider>().addReview(text: _reviewTextController.text, rating: reviewRating, postId: widget.postId);
-                  Navigator.pop(context);
+                  context.read<ReviewProvider>().addReview(text: _reviewTextController.text, rating: reviewRating, postId: widget.postId).then((_) {
+                    Navigator.pop(context);
+                  });
                 }, child: Text('완료'))));
   }
 

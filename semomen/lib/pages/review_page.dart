@@ -218,18 +218,42 @@ class ReviewPage extends StatelessWidget {
   }
 
   Widget _createReviewButton(BuildContext context, Size size) {
-    return Positioned(
-        bottom: 30.0,
-        child: SizedBox(
-            width: size.width - 24.0,
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: mainNavyBlue,
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CreateReviewPage(postId : postId)));
-                },
-                child: Text('작성하기'))));
+    return FutureBuilder<bool>(
+      future: context.read<ReviewProvider>().existMyReview(postId: postId),
+      builder: (context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.done) {
+          if(snapshot.data!) {
+            return Positioned(
+                bottom: 30.0,
+                child: SizedBox(
+                    width: size.width - 24.0,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: mainNavyBlue,
+                        ),
+                        onPressed: () {
+
+                        },
+                        child: Text('수정하기'))));
+          } else {
+            return Positioned(
+                bottom: 30.0,
+                child: SizedBox(
+                    width: size.width - 24.0,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: mainNavyBlue,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CreateReviewPage(postId : postId)));
+                        },
+                        child: Text('작성하기'))));
+          }
+
+        }
+        return Text('loading');
+      }
+    );
   }
 }
