@@ -26,12 +26,10 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
+        elevation: 0.0,
         title: Text('세상의 모든 멘토',style: TextStyle(
           fontWeight: FontWeight.bold,
-          foreground: Paint()..shader = LinearGradient(colors: <Color>[
-            mainBlueGreen,
-            mainBlueGrotto
-          ]).createShader(Rect.fromLTWH(0.0, 0.0, 300.0, 300.0)),
+          color: mainBlueGrotto
         ),),
       ),
       body: ListView(
@@ -45,6 +43,10 @@ class _HomePageState extends State<HomePage> {
           //   thickness: 5.0,
           // ),
           _popularGuide(size),  // 인기 가이드
+          Divider(
+            thickness: 5.0,
+          ),
+          _test(),
           Divider(
             thickness: 5.0,
           ),
@@ -210,6 +212,24 @@ class _HomePageState extends State<HomePage> {
         ),
       ));
   }
+
+  Widget _test() {
+    return Consumer<PostProvider>(
+      builder: (context, postProvider, child) {
+        postProvider.getPopularTest();
+
+        return ListView(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          children: [
+            Text('aaaaa'),
+            Text('bbbbb'),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _newGuide(Size size) {
     return Padding(
       padding: const EdgeInsets.all(12.0),

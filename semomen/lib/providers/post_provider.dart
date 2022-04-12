@@ -18,13 +18,20 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<DocumentSnapshot> getPopularPost() async {
-    final DocumentSnapshot postDoc = await postRepository.getPopularGuide();
+    final DocumentSnapshot postDoc = await postRepository.getPopularPost();
     return postDoc;
   }
 
   Future<PostModel> getJobOfThisWeek() async {
     final PostModel post = await postRepository.getJobOfThisWeek();
     return post;
+  }
+
+  Future<void> getPopularTest() async {
+    List<DocumentSnapshot> postList = await postRepository.popularTest();
+
+    print('어쩌고저쩌고');
+
   }
 
 }

@@ -109,6 +109,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
         onChanged: (String text) {
           debugPrint(text);
+          // getResult(text);
         },
         onSubmitted: (String text) {
           debugPrint("on submitted: "+text);

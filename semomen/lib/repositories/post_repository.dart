@@ -36,11 +36,13 @@ class PostRepository {
     }
   }
 
-  Future<DocumentSnapshot> getPopularGuide() async {
+  Future<DocumentSnapshot> getPopularPost() async {
     try {
       final DocumentSnapshot adminDoc = await adminRef.doc('zf1ISrDcXIkzxeDpv0Ua').get();
-      String postId = adminDoc.get('popular_guide');
-      final DocumentSnapshot postDoc = await postRef.doc(postId).get();
+
+      List<dynamic> postId = adminDoc.get('popular_post');
+
+      final DocumentSnapshot postDoc = await postRef.doc(postId[0].toString()).get();
 
       return postDoc;
     } on FirebaseException catch (e) {
@@ -48,6 +50,22 @@ class PostRepository {
     } catch (e) {
       throw e;
     }
+  }
+
+  Future<List<DocumentSnapshot>> popularTest() async {
+    List<DocumentSnapshot> postList= [];
+
+    final DocumentSnapshot adminDoc = await adminRef.doc('zf1ISrDcXIkzxeDpv0Ua').get();
+    final List<dynamic> popularPostIds = adminDoc.get('popular_post');
+    final QuerySnapshot postSnapshot = await postRef.get();
+
+    print(popularPostIds);
+    final test = popularPostIds.map((e) {
+      return postSnapshot.docs.where((element) => element.id == e.toString());
+    });
+
+    print(test);
+    return postList;
   }
 
 
