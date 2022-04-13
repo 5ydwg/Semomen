@@ -7,7 +7,6 @@ import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/model/post_model.dart';
 import 'package:semomen/pages/detail_guide_info_page.dart';
-import 'package:semomen/pages/guide_info_page.dart';
 import 'package:semomen/providers/mentee_provider.dart';
 import 'package:semomen/providers/post_provider.dart';
 
@@ -38,15 +37,7 @@ class _HomePageState extends State<HomePage> {
           Divider(
             thickness: 5.0,
           ),
-          // _recommendedGuide(size),  // 추천 가이드
-          // Divider(
-          //   thickness: 5.0,
-          // ),
-          _popularGuide(size),  // 인기 가이드
-          Divider(
-            thickness: 5.0,
-          ),
-          _test(),
+          _popularGuide(size),
           Divider(
             thickness: 5.0,
           ),
@@ -137,96 +128,87 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _popularGuide(Size size) {
-    return Consumer<PostProvider>(
-      builder: (context, postProvider, child) => Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('인기 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-            SizedBox(height: 8.0,),
-            FutureBuilder<DocumentSnapshot>(
-                future: postProvider.getPopularPost(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Container(
-                        padding: EdgeInsets.all(8.0),
-                        height: size.width * 0.625,
-                        width: size.width,
-                        color: Colors.grey,
-                        child: Text("Something went wrong"));
-                  }
-                  if (snapshot.hasData && !snapshot.data!.exists) {
-                    return Container(
-                        padding: EdgeInsets.all(8.0),
-                        height: size.width * 0.625,
-                        width: size.width,
-                        color: Colors.grey,
-                        child: Text("Document does not exist!!"));
-                  }
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    PostModel post = PostModel.fromDoc(snapshot.data!);
-                    return Stack(
-                      children: [
-                        Container(
-                          height: size.width * 0.625,
-                          width: size.width,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
-                            image: DecorationImage(
-                              onError: (object, stackTrace) {
+    return FutureBuilder<List<PostModel>>(
+        future: context.read<PostProvider>().getPopularPosts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong");
+          }
+          if(snapshot.connectionState == ConnectionState.done) {
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('인기 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                  SizedBox(height: 8.0,),
+                  SizedBox(
+                    height: size.width * 0.5 * 1.6,
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return SizedBox(
+                          width: size.width * 0.5,
+                          child: Card(
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: size.width * 0.5 * 0.625,
+                                  width: size.width * 0.5,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      onError: (object, stackTrace) {
 
-                              },
-                              image: NetworkImage(
-                                  post.jobImgUrl
-                              ),
+                                      },
+                                      image: NetworkImage(
+                                        snapshot.data![index].jobImgUrl == '' ? 'https://cdn.pixabay.com/photo/2018/09/22/11/34/board-3695073_1280.jpg' : snapshot.data![index].jobImgUrl,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(snapshot.data![index].job, style: TextStyle(fontWeight: FontWeight.bold),),
+                                      Text(snapshot.data![index].userName, style: TextStyle(fontWeight: FontWeight.bold),),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: size.width * 0.5,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(snapshot.data![index].introTitle, style: TextStyle(fontWeight: FontWeight.bold),),
+                                        SizedBox(height: 12.0,),
+                                        Text(snapshot.data![index].intro, style: TextStyle(color: Colors.grey), maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        Positioned(
-                          right: 8.0,
-                          bottom: 0.0,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(primary: Colors.white),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: post)));
-                            },
-                            child: Text(
-                              '자세히',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return Container(
-                      padding: EdgeInsets.all(8.0),
-                      height: size.width * 0.625,
-                      width: size.width,
-                      child: Center(child: CircularProgressIndicator()));
-                }
-            ),
-          ],
-        ),
-      ));
-  }
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return CircularProgressIndicator();
 
-  Widget _test() {
-    return Consumer<PostProvider>(
-      builder: (context, postProvider, child) {
-        postProvider.getPopularTest();
-
-        return ListView(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          children: [
-            Text('aaaaa'),
-            Text('bbbbb'),
-          ],
-        );
-      },
+        }
     );
   }
 

@@ -36,35 +36,18 @@ class PostRepository {
     }
   }
 
-  Future<DocumentSnapshot> getPopularPost() async {
-    try {
-      final DocumentSnapshot adminDoc = await adminRef.doc('zf1ISrDcXIkzxeDpv0Ua').get();
-
-      List<dynamic> postId = adminDoc.get('popular_post');
-
-      final DocumentSnapshot postDoc = await postRef.doc(postId[0].toString()).get();
-
-      return postDoc;
-    } on FirebaseException catch (e) {
-      throw e;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  Future<List<DocumentSnapshot>> popularTest() async {
-    List<DocumentSnapshot> postList= [];
+  /// 인기 가이드의 리스트를 반환하는 함수
+  /// 현재는 모든 인기 가이드를 받아온다.(구현 당시 인기 가이드 개수 2개)
+  /// 인기 가이드가 5개 이상일 때, 그 중 랜덤으로 5개만 받아올 수 있도록 수정할 것.
+  Future<List<PostModel>> getPopularPosts() async {
 
     final DocumentSnapshot adminDoc = await adminRef.doc('zf1ISrDcXIkzxeDpv0Ua').get();
-    final List<dynamic> popularPostIds = adminDoc.get('popular_post');
-    final QuerySnapshot postSnapshot = await postRef.get();
+    List<dynamic> popularPostIds = adminDoc.get('popular_post');
+    final QuerySnapshot result = await postRef.get();
+    List<QueryDocumentSnapshot<Object?>> posts = result.docs.where((element) => popularPostIds.contains(element.id)).toList();
 
-    print(popularPostIds);
-    final test = popularPostIds.map((e) {
-      return postSnapshot.docs.where((element) => element.id == e.toString());
-    });
+    List<PostModel> postList = posts.map((e) => PostModel.fromDoc(e)).toList();
 
-    print(test);
     return postList;
   }
 
