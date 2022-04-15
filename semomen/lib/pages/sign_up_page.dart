@@ -456,7 +456,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> createMenteeData({
     required String uid,}) async{
-    Map<String, dynamic> _menteeMap = MenteeModel(uid: uid, mentorUid: [], couponList: [], programId: [],).toJson();
+    Map<String, dynamic> _menteeMap = MenteeModel(uid: uid, mentorUid: [], couponList: [], programId: [], recentlyViewedPosts: []).toJson();
 
     return await mentees.doc(uid).set(_menteeMap)
         .then((value) {

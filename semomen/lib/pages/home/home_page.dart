@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -36,18 +37,22 @@ class _HomePageState extends State<HomePage> {
           _jobOfThisWeek(size), // 이주의 직업
           Divider(
             thickness: 5.0,
+            color: Colors.grey[100],
           ),
           _popularGuide(size),
           Divider(
             thickness: 5.0,
+            color: Colors.grey[100],
           ),
           _newGuide(size),  // 신규 등록 가이드
           Divider(
             thickness: 5.0,
+            color: Colors.grey[100],
           ),
           _recentGuide(size), // 최근 본 가이드
           Divider(
             thickness: 5.0,
+            color: Colors.grey[100],
           ),
           _purchasedGuide(size),  // 나의 구매 가이드
         ],
@@ -84,7 +89,8 @@ class _HomePageState extends State<HomePage> {
                       height: size.width * 0.625,
                       width: size.width,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0), color: mainBlueGrotto,
+                        borderRadius: BorderRadius.circular(4.0),
+                        color: mainBlueGrotto,
                         image: DecorationImage(
                           onError: (object, stackTrace) {
 
@@ -149,53 +155,57 @@ class _HomePageState extends State<HomePage> {
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return SizedBox(
-                          width: size.width * 0.5,
-                          child: Card(
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: size.width * 0.5 * 0.625,
-                                  width: size.width * 0.5,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      onError: (object, stackTrace) {
+                        PostModel post = snapshot.data![index];
+                        return GestureDetector(
+                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: post))),
+                          child: SizedBox(
+                            width: size.width * 0.5,
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: size.width * 0.5 * 0.625,
+                                    width: size.width * 0.5,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        onError: (object, stackTrace) {
 
-                                      },
-                                      image: NetworkImage(
-                                        snapshot.data![index].jobImgUrl == '' ? 'https://cdn.pixabay.com/photo/2018/09/22/11/34/board-3695073_1280.jpg' : snapshot.data![index].jobImgUrl,
+                                        },
+                                        image: NetworkImage(
+                                          snapshot.data![index].jobImgUrl == '' ? 'https://cdn.pixabay.com/photo/2018/09/22/11/34/board-3695073_1280.jpg' : snapshot.data![index].jobImgUrl,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(snapshot.data![index].job, style: TextStyle(fontWeight: FontWeight.bold),),
-                                      Text(snapshot.data![index].userName, style: TextStyle(fontWeight: FontWeight.bold),),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width * 0.5,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(snapshot.data![index].introTitle, style: TextStyle(fontWeight: FontWeight.bold),),
-                                        SizedBox(height: 12.0,),
-                                        Text(snapshot.data![index].intro, style: TextStyle(color: Colors.grey), maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                        Text(snapshot.data![index].job, style: TextStyle(fontWeight: FontWeight.bold),),
+                                        Text(snapshot.data![index].userName, style: TextStyle(fontWeight: FontWeight.bold),),
                                       ],
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: size.width * 0.5,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(snapshot.data![index].introTitle, style: TextStyle(fontWeight: FontWeight.bold),),
+                                          SizedBox(height: 12.0,),
+                                          Text(snapshot.data![index].intro, style: TextStyle(color: Colors.grey), maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -215,56 +225,82 @@ class _HomePageState extends State<HomePage> {
   Widget _newGuide(Size size) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('신규 등록 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-              Icon(Icons.chevron_right),
-            ],
-          ),
-          SizedBox(height: 8.0,),
-          ListView.separated(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 3,
-            separatorBuilder: (context, index) => SizedBox(
-              height: 8.0,
-            ),
-            itemBuilder: (context, index) => Card(
-              child: IntrinsicHeight(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: size.width * 0.3,
-                        height: size.width * 0.3,
-                        decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(4.0)
+      child: FutureBuilder<List<PostModel>>(
+        future: context.read<PostProvider>().getNewGuides(),
+        builder: (context, snapshot) {
+          if(snapshot.hasError) {
+            return Text('');
+          }
+          if(snapshot.hasData && snapshot.data!.isEmpty) {
+            return Text('Documents does not exist');
+          }
+          if(snapshot.connectionState == ConnectionState.done) {
+            List<PostModel> posts = snapshot.data!;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('신규 등록 가이드', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                SizedBox(height: 8.0,),
+                ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: 3,
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: 8.0,
+                  ),
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: posts[index])));
+                    },
+                    child: Card(
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: size.width * 0.3,
+                                height: size.width * 0.3,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    onError: (object, stackTrace) {
+
+                                    },
+                                    image: NetworkImage(
+                                      snapshot.data![index].jobImgUrl == '' ? 'https://cdn.pixabay.com/photo/2018/09/22/11/34/board-3695073_1280.jpg' : snapshot.data![index].jobImgUrl,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 12.0,),
+                              SizedBox(
+                                width: size.width * 0.5,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(posts[index].introTitle, style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis,),
+                                    SizedBox(height: 8.0,),
+                                    Text(posts[index].userName+' 멘토', style: TextStyle(fontSize: 14.0, color: Colors.grey, fontWeight: FontWeight.bold),),
+                                    SizedBox(height: 8.0,),
+                                    Text(posts[index].intro, style: TextStyle(fontSize: 14.0, color: Colors.grey,), maxLines: 2, overflow: TextOverflow.ellipsis,),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      SizedBox(width: 12.0,),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Title', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
-                          Text('mento name', style: TextStyle(fontSize: 14.0, color: Colors.grey, fontWeight: FontWeight.bold),),
-                          Text('Description', style: TextStyle(fontSize: 14.0, color: Colors.grey,),),
-                          Text('⭐⭐⭐⭐⭐ 5.0', style: TextStyle(color: Colors.yellow[600], fontWeight: FontWeight.bold),),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        ],),
+              ],);
+          }
+          return Text('loading');
+        }
+      ),
     );
   }
   Widget _recentGuide(Size size) {
@@ -277,41 +313,82 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 8.0,),
           SizedBox(
             height: size.width * 0.6 * 0.625,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: 5,
-              separatorBuilder: (context, index) => SizedBox(
-                width: 8.0,
-              ),
-              itemBuilder: (context, index) => Container(
-                width: size.width * 0.6,
-                height: size.width * 0.6 * 0.625,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    color: Colors.grey),
-                padding: EdgeInsets.all(8.0),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      bottom: 0.0,
-                      child: SizedBox(
-                        width: size.width * 0.6 * 0.25,
-                        height: size.width * 0.6 * 0.25 * 0.5,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style:
-                          ElevatedButton.styleFrom(primary: Colors.white),
-                          child: Text(
-                            '자세히',
-                            style:
-                            TextStyle(fontSize: 8.0, color: Colors.black),
+            child: StreamBuilder<DocumentSnapshot>(
+              stream: menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
+              builder: (context, snapshot) {
+                if(snapshot.hasError) {
+                  return Text('error');
+                }
+                if(snapshot.connectionState == ConnectionState.waiting) {
+                  return Text('Loading');
+                }
+                List<dynamic> recentlyPostId = snapshot.data!.get('recently_viewed_posts');
+                List<dynamic> reversedPosts = recentlyPostId.reversed.take(3).toList();
+                /// 최대 5개까지만 담을 수 있도록 설정
+                return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: reversedPosts.length,
+                  separatorBuilder: (context, index) => SizedBox(width: 8.0,),
+                  itemBuilder: (context, index) => FutureBuilder<PostModel>(
+                    future: context.read<PostProvider>().getPost(postId: reversedPosts[index]),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasError) {
+                        return Text('something is wrong');
+                      }
+                      if(snapshot.hasData && snapshot.data!.postId=='') {
+                        return Text('data not exist!');
+                      }
+                      if(snapshot.connectionState == ConnectionState.done) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: snapshot.data!)));
+                          },
+                          child: Container(
+                            width: size.width * 0.6,
+                            height: size.width * 0.6 * 0.625,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.0),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  onError: (object, stackTrace) {
+
+                                  },
+                                  image: NetworkImage(
+                                    snapshot.data!.jobImgUrl == '' ? 'https://cdn.pixabay.com/photo/2018/09/22/11/34/board-3695073_1280.jpg' : snapshot.data!.jobImgUrl,
+                                  ),
+                                  fit: BoxFit.cover
+                              ),
+                            ),
+                            padding: EdgeInsets.all(8.0),
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  bottom: 0.0,
+                                  child: SizedBox(
+                                    width: size.width * 0.6 * 0.25,
+                                    height: size.width * 0.6 * 0.25 * 0.5,
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style:
+                                      ElevatedButton.styleFrom(primary: Colors.white),
+                                      child: Text(
+                                        '자세히',
+                                        style:
+                                        TextStyle(fontSize: 8.0, color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                        );
+                      }
+                      return Text('Loading');
+                    }
+                  ),
+                );
+              }
             ),
           ),
         ],),

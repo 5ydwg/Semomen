@@ -8,9 +8,9 @@ class PostRepository {
     required this.firebaseFirestore,
   });
 
-  Future<PostModel> getPost({required String uid}) async {
+  Future<PostModel> getPost({required String postId}) async {
     try {
-      final DocumentSnapshot postDoc = await postRef.doc(uid).get();
+      final DocumentSnapshot postDoc = await postRef.doc(postId).get();
       final PostModel post = PostModel.fromDoc(postDoc);
 
       return post;
@@ -26,6 +26,7 @@ class PostRepository {
       final DocumentSnapshot adminDoc = await adminRef.doc('zf1ISrDcXIkzxeDpv0Ua').get();
       String postId = adminDoc.get('recommended_job');
       final DocumentSnapshot postDoc = await postRef.doc(postId).get();
+
       final PostModel post = PostModel.fromDoc(postDoc);
 
       return post;
@@ -49,6 +50,15 @@ class PostRepository {
     List<PostModel> postList = posts.map((e) => PostModel.fromDoc(e)).toList();
 
     return postList;
+  }
+
+  Future<List<PostModel>> getNewGuides() async{
+    final QuerySnapshot snapshot = await postRef.get();
+    final List<QueryDocumentSnapshot<Object?>> posts = snapshot.docs;
+    List<PostModel> result = [];
+    posts.sort((a, b) => b.get('date_time').toString().compareTo(a.get('date_time').toString()));
+    result = posts.map((e) => PostModel.fromDoc(e)).take(3).toList(); // 가장 최신의 post를 3개만 가져오기
+    return result;
   }
 
 

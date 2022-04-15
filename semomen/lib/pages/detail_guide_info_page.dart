@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
+import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/post_model.dart';
 import 'package:semomen/pages/capability_gude_page.dart';
 import 'package:semomen/pages/review_page.dart';
@@ -37,12 +39,28 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
       ),
     );
     profileImageUrl = widget.post.profileImg;
+    updateRecentlyViewedPosts();
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void updateRecentlyViewedPosts() async {
+    final DocumentSnapshot ds = await menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).get();
+    List<dynamic> recentlyViewedPostIds = ds.get('recently_viewed_posts');
+    debugPrint(recentlyViewedPostIds.toString());
+    if(recentlyViewedPostIds.contains(widget.post.postId)) {
+      debugPrint('exist post');
+      menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).update({'recently_viewed_posts': FieldValue.arrayRemove([widget.post.postId])});
+      menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).update({'recently_viewed_posts': FieldValue.arrayUnion([widget.post.postId])});
+    } else {
+      debugPrint('dont exist post');
+      menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).update({'recently_viewed_posts': FieldValue.arrayUnion([widget.post.postId])});
+    }
+
   }
 
   @override
@@ -196,7 +214,11 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
         future: context.read<ReviewProvider>().getReviews(postId: widget.post.postId),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done) {
-            return Consumer<ReviewProvider>(
+            return context.watch<ReviewProvider>().reviews.isEmpty ? Column(children: [
+              Text('리뷰가 없습니다'),
+
+            ],)
+                : Consumer<ReviewProvider>(
                 builder: (context, reviewProvider, child) => Column(
                   children: [
                     Text(
