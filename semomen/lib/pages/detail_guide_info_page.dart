@@ -51,13 +51,10 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
   void updateRecentlyViewedPosts() async {
     final DocumentSnapshot ds = await menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).get();
     List<dynamic> recentlyViewedPostIds = ds.get('recently_viewed_posts');
-    debugPrint(recentlyViewedPostIds.toString());
     if(recentlyViewedPostIds.contains(widget.post.postId)) {
-      debugPrint('exist post');
       menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).update({'recently_viewed_posts': FieldValue.arrayRemove([widget.post.postId])});
       menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).update({'recently_viewed_posts': FieldValue.arrayUnion([widget.post.postId])});
     } else {
-      debugPrint('dont exist post');
       menteeRef.doc(FirebaseAuth.instance.currentUser!.uid).update({'recently_viewed_posts': FieldValue.arrayUnion([widget.post.postId])});
     }
 

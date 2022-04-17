@@ -9,6 +9,7 @@ class PostModel{
   List<dynamic> lecture;
   List<dynamic> major;
   List<dynamic> vLog;
+  //List<dynamic>? youtube;
   String intro;
   String introTitle;
   String job;
@@ -28,6 +29,7 @@ class PostModel{
     required this.lecture,
     required this.major,
     required this.vLog,
+    //this.youtube,
     required this.intro,
     required this.introTitle,
     required this.job,
@@ -50,14 +52,15 @@ class PostModel{
       lecture : postData['guides']['lecture'] ?? [],
       major : postData['guides']['major'] ?? [],
       vLog : postData['guides']['v_log'] ?? [],
-      intro : postData['intro'],
-      introTitle : postData['intro_title'],
-      job : postData['job'],
+      //youtube: postData['guides']['you_tube'] ?? [],
+      intro : postData['intro'] ?? '',
+      introTitle : postData['intro_title'] ?? '',
+      job : postData['job'] ?? '',
       jobDesc : postData['job_desc'] ?? '',
       jobImgUrl : postData['job_img_url']  ?? '',
       jobVideoUrl : postData['job_video_url'],
       profileImg : postData['profile_img'] ?? '',
-      userName : postData['user_name'],
+      userName : postData['user_name'] ?? '',
     );
   }
 

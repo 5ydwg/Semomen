@@ -9,6 +9,7 @@ import 'package:semomen/pages/search/search_page.dart';
 import 'package:semomen/providers/mentee_provider.dart';
 import 'package:semomen/providers/post_provider.dart';
 import 'package:semomen/providers/review_provider.dart';
+import 'package:semomen/providers/search_provider.dart';
 import 'package:semomen/providers/user_provider.dart';
 import 'package:semomen/repositories/post_repository.dart';
 class RootPage extends StatefulWidget {
@@ -53,6 +54,7 @@ class _RootPageState extends State<RootPage> {
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => MenteeProvider(firebaseAuth: FirebaseAuth.instance)),
         ChangeNotifierProvider(create: (context) => PostProvider(postRepository: PostRepository(firebaseFirestore:FirebaseFirestore.instance))),
+        ChangeNotifierProvider(create: (context) => SearchProvider()),
       ],
       child: Scaffold(
         body: IndexedStack(

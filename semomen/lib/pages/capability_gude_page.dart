@@ -61,6 +61,15 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
     }).toList();
   }
 
+  // List<ExpansionPanelRadio> youTube(Size size) {
+  //   final youTube = widget.post.youtube!.toList();
+  //   return youTube.asMap().entries.map((entry) {
+  //     int value = entry.key;
+  //     dynamic content = entry.value;
+  //     return _capabilitiesGuideItem(size, value, content);
+  //   }).toList();
+  // }
+
   Widget _capabilitiesGuide(Size size) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -81,7 +90,7 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
             ],
           ),
           Divider(),
-          widget.post.major.isNotEmpty ?  Column(
+          widget.post.major.isNotEmpty ? Column(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -100,19 +109,44 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
             ],
           ) : Container(),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              '추천 브이로그',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          ExpansionPanelList.radio(
-            expandedHeaderPadding: EdgeInsets.all(0.0),
+          widget.post.vLog.isNotEmpty ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ...vLog(size),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  '추천 브이로그',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ExpansionPanelList.radio(
+                expandedHeaderPadding: EdgeInsets.all(0.0),
+                children: [
+                  ...vLog(size),
+                ],
+              ),
+              Divider(),
             ],
-          ),
+          ) : Container(),
+          // widget.post.youtube!.isNotEmpty ? Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.symmetric(vertical: 8.0),
+          //       child: Text(
+          //         '추천 유튜브',
+          //         style: TextStyle(fontWeight: FontWeight.bold),
+          //       ),
+          //     ),
+          //     ExpansionPanelList.radio(
+          //       expandedHeaderPadding: EdgeInsets.all(0.0),
+          //       children: [
+          //         ...youTube(size),
+          //       ],
+          //     ),
+          //   ],
+          // ) : Container(),
+
         ],
       ),
     );
@@ -161,7 +195,7 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
                       width: size.width * 0.5,
                       child: Text(
                         content['desc'],
-                        maxLines: 3,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -189,8 +223,9 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
+                  Text(content['desc']),
+                  SizedBox(height: 8.0,),
+                  Text(content['url'], style: TextStyle(color: Colors.blue),),
                 ],
               ),
             ),
