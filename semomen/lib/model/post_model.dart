@@ -18,6 +18,8 @@ class PostModel{
   String jobVideoUrl;
   String profileImg;
   String userName;
+  bool isActivate;
+  bool isMentoring;
 
 
   PostModel({
@@ -38,6 +40,8 @@ class PostModel{
     required this.jobVideoUrl,
     required this.profileImg,
     required this.userName,
+    required this.isActivate,
+    required this.isMentoring,
   });
 
   factory PostModel.fromDoc(DocumentSnapshot postDoc) {
@@ -58,9 +62,11 @@ class PostModel{
       job : postData['job'] ?? '',
       jobDesc : postData['job_desc'] ?? '',
       jobImgUrl : postData['job_img_url']  ?? '',
-      jobVideoUrl : postData['job_video_url'],
+      jobVideoUrl : postData['job_video_url'] ?? '',
       profileImg : postData['profile_img'] ?? '',
       userName : postData['user_name'] ?? '',
+      isActivate: postData['is_activate'] ?? false,
+      isMentoring: postData['is_mentoring'] ?? false,
     );
   }
 
