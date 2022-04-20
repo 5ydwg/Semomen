@@ -18,7 +18,7 @@ class PostModel{
   String jobVideoUrl;
   String profileImg;
   String userName;
-  bool isActivate;
+  String isActivate;
   bool isMentoring;
 
 
@@ -65,7 +65,7 @@ class PostModel{
       jobVideoUrl : postData['job_video_url'] ?? '',
       profileImg : postData['profile_img'] ?? '',
       userName : postData['user_name'] ?? '',
-      isActivate: postData['is_activate'] ?? false,
+      isActivate: postData['is_activate'] ?? '',
       isMentoring: postData['is_mentoring'] ?? false,
     );
   }
