@@ -25,10 +25,8 @@ class PostProvider extends ChangeNotifier {
     return postList;
   }
 
-  Future<List<PostModel>> getNewGuides() async{
+  Future<List<PostModel>> getNewGuides() async {
     List<PostModel> newGuides = await postRepository.getNewGuides();
-
     return newGuides;
   }
-
 }

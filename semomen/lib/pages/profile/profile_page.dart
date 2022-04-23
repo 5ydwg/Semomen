@@ -24,9 +24,9 @@ class _ProfilePageState extends State<ProfilePage> {
         return StreamBuilder<DocumentSnapshot>(
             stream: userProvider.getCurrentUser(),
             builder: (context, snapshot) {
-              if(snapshot.hasError) {
+              if (snapshot.hasError) {
                 return Text('Something went wrong');
-              } else if(snapshot.connectionState == ConnectionState.waiting) {
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
               } else {
                 UserModel _user = UserModel.fromDoc(snapshot.data!);
@@ -45,7 +45,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => PurchasedGuidePage()),
+                                          builder: (context) =>
+                                              PurchasedGuidePage()),
                                     );
                                   },
                                   icon: Icon(Icons.chevron_right),
@@ -80,8 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
               }
-            }
-        );
+            });
       },
     );
   }
@@ -152,13 +152,18 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           ClipOval(
               child: Image.network(
-                user.profileImg != '' ? user.profileImg : 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png',
-                fit: BoxFit.cover,
-                width: size.width * 0.2,
-                height: size.width * 0.2,
-                errorBuilder: (context, error, stackTrace) => Container(height: size.width * 0.2, width:size.width * 0.2,color: mainBabyBlue,),
-              )
-          ),
+            user.profileImg != ''
+                ? user.profileImg
+                : 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png',
+            fit: BoxFit.cover,
+            width: size.width * 0.2,
+            height: size.width * 0.2,
+            errorBuilder: (context, error, stackTrace) => Container(
+              height: size.width * 0.2,
+              width: size.width * 0.2,
+              color: mainBabyBlue,
+            ),
+          )),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Text(
