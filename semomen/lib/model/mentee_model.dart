@@ -1,4 +1,4 @@
-class MenteeModel{
+class MenteeModel {
   String uid;
   List<dynamic> mentorUid;
   List<dynamic> programId;
@@ -14,17 +14,17 @@ class MenteeModel{
   });
 
   Map<String, dynamic> toJson() => {
-    'uid':uid,
-    'mentor_uid':mentorUid,
-    'program_id':programId,
-    'coupon_list':couponList,
-    'recently_viewed_post':recentlyViewedPosts,
-  };
+        'uid': uid,
+        'mentor_uid': mentorUid,
+        'program_id': programId,
+        'coupon_list': couponList,
+        'recently_viewed_posts': recentlyViewedPosts,
+      };
 
-  MenteeModel.fromJson(Map<String, dynamic> json) :
-        uid = json['uid'] ?? '',
+  MenteeModel.fromJson(Map<String, dynamic> json)
+      : uid = json['uid'] ?? '',
         mentorUid = json['mentor_uid'] ?? [],
         programId = json['program_id'] ?? [],
         couponList = json['coupon_list'] ?? [],
-        recentlyViewedPosts = json['recently_viewed_post'] ?? [];
+        recentlyViewedPosts = json['recently_viewed_posts'] ?? [];
 }
