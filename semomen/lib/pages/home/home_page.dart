@@ -285,7 +285,7 @@ class _HomePageState extends State<HomePage> {
                   ListView.separated(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: 3,
+                    itemCount: posts.length,
                     separatorBuilder: (context, index) => SizedBox(
                       height: 8.0,
                     ),
