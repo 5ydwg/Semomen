@@ -58,9 +58,12 @@ class ChatList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<DocumentSnapshot<Object?>>(
         stream: groupChatRef.doc(data['uid']).snapshots(),
         builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text('데이터가 없습니다');
+          }
           if (snapshot.hasError) {
             return Text('Something went wrong');
           } else if (snapshot.connectionState == ConnectionState.waiting) {

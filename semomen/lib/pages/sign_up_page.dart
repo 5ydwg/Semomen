@@ -117,7 +117,6 @@ class _SignUpPageState extends State<SignUpPage> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
         ),
         TextField(
-          
           controller: _phoneNumberController,
           cursorColor: Colors.black,
           maxLength: 11,
@@ -136,7 +135,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 color: Colors.grey,
               ),
             ),
-            hintText: '숫자만 입력해주세요', 
+            hintText: '숫자만 입력해주세요',
             filled: true,
             fillColor: Color(0xfff6f6fd),
             border: OutlineInputBorder(
@@ -512,7 +511,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }) async {
     Map<String, dynamic> _menteeMap = MenteeModel(
         uid: uid,
-        mentorUid: [],
+        mentor: [{}],
         couponList: [],
         programId: [],
         recentlyViewedPosts: []).toJson();
