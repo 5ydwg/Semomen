@@ -5,3 +5,4 @@ final menteeRef = FirebaseFirestore.instance.collection('mentees');
 final postRef = FirebaseFirestore.instance.collection('posts');
 final adminRef = FirebaseFirestore.instance.collection('admin');
 final mentorRef = FirebaseFirestore.instance.collection('mentors');
+final groupChatRef = FirebaseFirestore.instance.collection('groupchat');

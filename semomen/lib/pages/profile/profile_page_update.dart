@@ -78,7 +78,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                             children: [
                               _profileBox(size, _user),
                               Divider(),
-                              _emailInput(),
+                              _emailInput(_user),
                               Divider(),
                               _pwdInput(),
                               Divider(),
@@ -395,7 +395,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
     );
   }
 
-  Widget _emailInput() {
+  Widget _emailInput(UserModel _user) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -421,7 +421,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                 color: Colors.grey,
               ),
             ),
-            hintText: '이메일을 입력해주세요.',
+            hintText: _user.email,
             filled: true,
             fillColor: Color(0xfff6f6fd),
             border: OutlineInputBorder(
