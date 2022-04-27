@@ -9,16 +9,17 @@ class MyCouponPage extends StatefulWidget {
 
 //더미
 List<Map<String, dynamic>> dataList = [
-  {
-    "title": "가이드 구매 할인 쿠폰",
-    "subtitle": "5000원",
-    "subtitle1": "사용기간 2022/05/09까지"
-  },
-  {
-    "title": "가이드 구매 할인 쿠폰",
-    "subtitle": "30%",
-    "subtitle1": "사용기간 2022/04/09까지"
-  },
+  // {
+  //   "title": "가이드 구매 할인 쿠폰",
+  //   "subtitle": "5000원",
+  //   "subtitle1": "사용기간 2022/05/09까지"
+  // },
+  // {
+  //   "title": "가이드 구매 할인 쿠폰",
+  //   "subtitle": "30%",
+  //   "subtitle1": "사용기간 2022/04/09까지"
+  // },
+  {"title": "준비중입니다", "subtitle": "100%", "subtitle1": "사용기간 2099/12/31까지"},
 ];
 
 class _MyCouponPageState extends State<MyCouponPage> {
@@ -30,7 +31,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
-          '나의 쿠폰함',
+          '쿠폰함',
           style: TextStyle(color: Colors.black),
         ),
         iconTheme: IconThemeData(

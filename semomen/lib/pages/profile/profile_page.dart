@@ -9,6 +9,9 @@ import 'package:semomen/pages/my_coupon_page.dart';
 import 'package:semomen/pages/purchased_guide_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 
+import '../payment_page.dart';
+import '../service_center_page.dart';
+
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -24,9 +27,9 @@ class _ProfilePageState extends State<ProfilePage> {
         return StreamBuilder<DocumentSnapshot>(
             stream: userProvider.getCurrentUser(),
             builder: (context, snapshot) {
-              if(snapshot.hasError) {
+              if (snapshot.hasError) {
                 return Text('Something went wrong');
-              } else if(snapshot.connectionState == ConnectionState.waiting) {
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
               } else {
                 UserModel _user = UserModel.fromDoc(snapshot.data!);
@@ -38,36 +41,31 @@ class _ProfilePageState extends State<ProfilePage> {
                         Card(
                           child: Column(
                             children: [
+                              // ListTile(
+                              //   onTap: () {
+                              //     Navigator.push(
+                              //       context,
+                              //       MaterialPageRoute(
+                              //           builder: (context) =>
+                              //               PurchasedGuidePage()),
+                              //     );
+                              //   },
+                              //   leading: Text('구매 가이드'),
+                              //   dense: true,
+                              // ),
                               ListTile(
-                                leading: Text('구매 가이드'),
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => PurchasedGuidePage()),
-                                    );
-                                  },
-                                  icon: Icon(Icons.chevron_right),
-                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyCouponPage()),
+                                  );
+                                },
+                                leading: Text('쿠폰함'),
                                 dense: true,
                               ),
                               Divider(
                                 height: 0.0,
-                              ),
-                              ListTile(
-                                leading: Text('쿠폰함'),
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MyCouponPage()),
-                                    );
-                                  },
-                                  icon: Icon(Icons.chevron_right),
-                                ),
-                                dense: true,
                               ),
                             ],
                           ),
@@ -80,8 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
               }
-            }
-        );
+            });
       },
     );
   }
@@ -109,35 +106,44 @@ class _ProfilePageState extends State<ProfilePage> {
     return Card(
       child: Column(
         children: [
+          // ListTile(
+          //   leading: Text('계정 관리'),
+          //   trailing: IconButton(
+          //     onPressed: () {},
+          //     icon: Icon(Icons.chevron_right),
+          //   ),
+          //   dense: true,
+          // ),
+          Divider(
+            height: 0.0,
+          ),
           ListTile(
-            leading: Text('계정 관리'),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.chevron_right),
-            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ServiceCenterPage()),
+              );
+            },
+            leading: Text('고객센터'),
             dense: true,
           ),
           Divider(
             height: 0.0,
           ),
+
+          //결제-설정
           ListTile(
-            leading: Text('고객 센터'),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.chevron_right),
-            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PaymentPage()),
+              );
+            },
+            leading: Text('이용권 구매'),
             dense: true,
           ),
           Divider(
-            height: 0.0,
-          ),
-          ListTile(
-            leading: Text('환경 설정'),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.chevron_right),
-            ),
-            dense: true,
+            height: 0.1,
           ),
         ],
       ),
@@ -152,13 +158,18 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           ClipOval(
               child: Image.network(
-                user.profileImg != '' ? user.profileImg : 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png',
-                fit: BoxFit.cover,
-                width: size.width * 0.2,
-                height: size.width * 0.2,
-                errorBuilder: (context, error, stackTrace) => Container(height: size.width * 0.2, width:size.width * 0.2,color: mainBabyBlue,),
-              )
-          ),
+            user.profileImg != ''
+                ? user.profileImg
+                : 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png',
+            fit: BoxFit.cover,
+            width: size.width * 0.2,
+            height: size.width * 0.2,
+            errorBuilder: (context, error, stackTrace) => Container(
+              height: size.width * 0.2,
+              width: size.width * 0.2,
+              color: mainBabyBlue,
+            ),
+          )),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Text(
