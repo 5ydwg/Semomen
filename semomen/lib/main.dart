@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/pages/root_page.dart';
 import 'package:semomen/pages/sign_in_page.dart';
+import 'package:semomen/providers/mentee_provider.dart';
 import 'package:semomen/providers/review_provider.dart';
 import 'package:semomen/repositories/review_repository.dart';
 
@@ -22,7 +23,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ReviewProvider(reviewRepository: ReviewRepository())),
+        ChangeNotifierProvider(
+            create: (context) =>
+                ReviewProvider(reviewRepository: ReviewRepository())),
       ],
       child: MaterialApp(
         title: 'Semomen',
@@ -33,13 +36,12 @@ class MyApp extends StatelessWidget {
         home: StreamBuilder<User?>(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-              if(!snapshot.hasData) {
+              if (!snapshot.hasData) {
                 return const SignInPage();
               } else {
                 return const RootPage();
               }
-            }
-        ),
+            }),
       ),
     );
   }

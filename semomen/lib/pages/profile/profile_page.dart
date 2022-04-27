@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/my_coupon_page.dart';
+import 'package:semomen/pages/profile/profile_page_update.dart';
 import 'package:semomen/pages/purchased_guide_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 
@@ -179,7 +180,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           ElevatedButton(
               style: ElevatedButton.styleFrom(primary: Color(0xff05445e)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePageUpdate()),
+                );
+              },
               child: Text('프로필 수정')),
         ],
       ),

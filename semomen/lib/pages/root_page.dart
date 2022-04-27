@@ -20,12 +20,14 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
+
   final List<Widget> _pages = [
     HomePage(),
     SearchPage(),
     ChatPage(),
     ProfilePage(),
   ];
+  
   int _selectedIndex = 0;
 
   Widget _bottomNavigationBar(int selectedIndex) {

@@ -9,7 +9,4 @@ class UserProvider extends ChangeNotifier {
   Stream<DocumentSnapshot> getCurrentUser() {
     return userRef.doc(_uid).snapshots();
   }
-
-
-
 }

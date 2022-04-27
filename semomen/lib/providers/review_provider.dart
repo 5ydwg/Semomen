@@ -1,14 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/review_model.dart';
+import 'package:semomen/model/user_model.dart';
 import 'package:semomen/repositories/review_repository.dart';
 
 class ReviewProvider extends ChangeNotifier {
   final ReviewRepository reviewRepository;
   List<ReviewModel> _reviews = [];
   List<ReviewModel> get reviews => _reviews;
-
 
   ReviewProvider({
     required this.reviewRepository,
@@ -35,23 +36,30 @@ class ReviewProvider extends ChangeNotifier {
 
 // 리뷰 평점 별 퍼센트를 반환하는 함수
   double getScorePercent(int score) {
-    final int num = _reviews.where((element) => element.star == score).length; // score 점수를 준 인원 수
+    final int num = _reviews
+        .where((element) => element.star == score)
+        .length; // score 점수를 준 인원 수
 
-    return num / _reviews.length;  // score 점수를 준 인원 수 / 전체 리뷰의 수
+    return num / _reviews.length; // score 점수를 준 인원 수 / 전체 리뷰의 수
   }
 
-  Future<void> addReview({required String text, required double rating, required String postId}) async {
+  Future<void> addReview(
+      {required String text,
+      required double rating,
+      required String postId}) async {
     String currentUid = FirebaseAuth.instance.currentUser!.uid;
+    final DocumentSnapshot userDoc = await userRef.doc(currentUid).get();
+    final UserModel user = await UserModel.fromDoc(userDoc);
     Map<String, dynamic> review = ReviewModel(
-        profileImg: '',
-        review: text,
-        star: rating.toInt(),
-        uid: currentUid,
-        uploadTime: DateTime.now(),
-        userName: 'jspark',
+      profileImg: user.profileImg,
+      review: text,
+      star: rating.toInt(),
+      uid: currentUid,
+      uploadTime: DateTime.now(),
+      userName: user.userName,
     ).toJson();
 
-    postRef.doc(postId).collection('reviews').doc(currentUid+'r').set(review);
+    postRef.doc(postId).collection('reviews').doc(currentUid + 'r').set(review);
     _reviews = await reviewRepository.getReviews(postId: postId);
 
     notifyListeners();
@@ -60,9 +68,8 @@ class ReviewProvider extends ChangeNotifier {
   // post id를 통해 해당 post에 내가 작성한 review가 있는지 없는지를 반환하는 함수
   Future<bool> existMyReview({required String postId}) async {
     String currentUid = FirebaseAuth.instance.currentUser!.uid;
-    bool exist = _reviews.where((element) => element.uid == currentUid).isNotEmpty;
+    bool exist =
+        _reviews.where((element) => element.uid == currentUid).isNotEmpty;
     return exist;
   }
-
-
 }

@@ -11,25 +11,32 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<List<PostModel>> getSearchResult(
+      {required String category, required String searchText}) async {
+    final postCollection =
+        await postRef.where('is_activate', isEqualTo: 'true').get();
 
-  Future<List<PostModel>> getSearchResult({required String category, required String searchText}) async {
-    final postCollection = await postRef.get();
-
-    if(category == 'title') {
-      final results = postCollection.docs.where((element) => element.get('intro_title').toString().contains(searchText)).toList();
+    if (category == 'title') {
+      final results = postCollection.docs
+          .where((element) =>
+              element.get('intro_title').toString().contains(searchText))
+          .toList();
       _searchResults = results.map((e) => PostModel.fromDoc(e)).toList();
-    } else if(category == 'mentor') {
-
-      final results = postCollection.docs.where((element) => element.get('user_name').toString().contains(searchText)).toList();
+    } else if (category == 'mentor') {
+      final results = postCollection.docs
+          .where((element) =>
+              element.get('user_name').toString().contains(searchText))
+          .toList();
       _searchResults = results.map((e) => PostModel.fromDoc(e)).toList();
     } else {
-
-      final results = postCollection.docs.where((element) => element.get('job').toString().contains(searchText)).toList();
+      final results = postCollection.docs
+          .where(
+              (element) => element.get('job').toString().contains(searchText))
+          .toList();
       _searchResults = results.map((e) => PostModel.fromDoc(e)).toList();
     }
 
     notifyListeners();
     return _searchResults;
   }
-
 }
