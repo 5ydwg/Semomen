@@ -123,7 +123,7 @@ class ChatArea extends StatelessWidget {
         Duration(milliseconds: 500),
         () => _scrollController
             .jumpTo(_scrollController.position.maxScrollExtent));
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<QuerySnapshot<Object?>>(
         stream: groupChatRef
             .doc(data['uid'])
             .collection('messages')
@@ -132,6 +132,8 @@ class ChatArea extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Something went wrong');
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
           } else {
             //받아올 chatMessage
             List chatMessages = [];

@@ -15,7 +15,7 @@ class _ChatPageState extends State<ChatPage> {
     Size size = MediaQuery.of(context).size;
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<DocumentSnapshot<Object?>>(
         stream: menteeRef.doc(uid).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -68,8 +68,8 @@ class ChatList extends StatelessWidget {
           } else {
             return GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ChatRoomPage( data : data)));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ChatRoomPage(data: data)));
               },
               child: ListTile(
                 leading: CircleAvatar(
