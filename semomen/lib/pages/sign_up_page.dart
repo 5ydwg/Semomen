@@ -480,7 +480,7 @@ class _SignUpPageState extends State<SignUpPage> {
             isMentor: false,
             isMentee: true,
             profileImg:
-                'https://cdn-icons.flaticon.com/png/512/3177/premium/3177440.png?token=exp=1649682863~hmac=1d3efd8f85cf2b0e08d4ff60473674f5',
+                'https://firebasestorage.googleapis.com/v0/b/kkumjik1.appspot.com/o/image%2Fprofile_img%2Fuser.png?alt=media&token=248a1cb5-a14c-4a9c-8e83-44d307f1080a',
             phoneNumber: phoneNumber,
             birth: birth,
             job: job)
