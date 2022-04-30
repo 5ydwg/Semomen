@@ -73,9 +73,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else {
+        } else if (snapshot.hasData) {
           UserModel _user = UserModel.fromDoc(snapshot.data!);
           return Scaffold(
               appBar: AppBar(
@@ -143,6 +141,8 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                       )),
                 ],
               ));
+        } else {
+          return Text('데이터 준비중');
         }
       },
     );
