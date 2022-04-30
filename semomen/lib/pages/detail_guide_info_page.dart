@@ -467,9 +467,8 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
             }
           });
 
-          // mentor 컬렉션의 mentee 받아오기
           List<dynamic> menteeInMentor = [];
-
+          // mentor 컬렉션의 mentee 받아오기
           FirebaseFirestore.instance
               .collection('mentors')
               .doc(widget.post.uid)
@@ -477,12 +476,25 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
               .then((DocumentSnapshot documentSnapshot) {
             if (documentSnapshot.exists) {
               final List data = documentSnapshot.get('mentee');
-              menteeInMentor = [...data];
+              data.forEach((element) {
+                //더미데이터 제거
+                print(element);
+                if (element['uid'] != null) {
+                  menteeInMentor.add(element);
+                }
+              });
             }
           });
 
+          List mentorList = [];
           //mentee 컬렉션의 mentor들 받아오기
           List<dynamic> mentor = snapshot.data!.get('mentor');
+          mentor.forEach((element) {
+            //더미데이터 제거
+            if (element['uid'] != null) {
+              mentorList.add(element);
+            }
+          });
 
           // mentee 컬렉션 내 mentor 필드에 mentor 있는지 확인하기
 
@@ -495,7 +507,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
               ? ElevatedButton(
                   onPressed: () {
                     // 이전 mentee컬렉션 내 지금 mentorData 추가할 데이터
-                    List<dynamic> setMentor = [...mentor, mentorData];
+                    List<dynamic> setMentor = [...mentorList, mentorData];
 
                     //mentee 컬렉션에 mentorData 추가
                     menteeRef.doc(uid).update({'mentor': setMentor}).then(
@@ -514,16 +526,15 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                         .update({'mentee': setMenteeInMentor}).then(
                             (value) => print('mentor 세팅 완료!'));
                   },
-                  child: Text('멘토링\n 요청'))
+                  child: Text('단체방 \n 입장 '))
 
               // 내가 현재 멘토를 선정 하였을 때
               : ElevatedButton(
                   onPressed: () async {
                     // 이전 mentee 컬렉션에 mentor 빼기
-                    List<dynamic> setMentor = [...mentor];
+                    List<dynamic> setMentor = [...mentorList];
                     setMentor
                         .removeWhere((item) => item['uid'] == widget.post.uid);
-                    print(setMentor);
 
                     // 이후 mentee 컬렉션에 mentor 빼기
                     menteeRef.doc(uid).update({'mentor': setMentor}).then(

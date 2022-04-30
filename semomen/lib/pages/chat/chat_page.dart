@@ -38,7 +38,9 @@ class _ChatPageState extends State<ChatPage> {
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: ListView.separated(
                     itemBuilder: (context, index) =>
-                        ChatList(data: data[index]),
+                        data[index]['uid'] != 'undefined'
+                            ? ChatList(data: data[index], uid: uid)
+                            : SizedBox(),
                     separatorBuilder: (context, index) => Divider(),
                     itemCount: data.length),
               ),
@@ -52,9 +54,11 @@ class ChatList extends StatelessWidget {
   const ChatList({
     Key? key,
     required this.data,
+    required this.uid,
   }) : super(key: key);
 
   final Map data;
+  final String uid;
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +73,22 @@ class ChatList extends StatelessWidget {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           } else {
+            Map<String, dynamic> chat_data =
+                snapshot.data!.data() as Map<String, dynamic>;
+
+            List chatDataReader = chat_data['recent_message_reader'];
+
+            bool isReaded = chatDataReader.contains(uid);
+
             return GestureDetector(
-              onTap: () {
+              onTap: () async {
+                print('test');
+
+                if (!chatDataReader.contains(uid)) {
+                  await groupChatRef.doc(data['uid']).update({
+                    'recent_message_reader': [...chatDataReader, uid]
+                  });
+                }
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ChatRoomPage(data: data)));
               },
@@ -84,29 +102,30 @@ class ChatList extends StatelessWidget {
                 title:
                     Text(data['user_name'] == null ? ' ' : data['user_name']),
                 subtitle: Text(
-                  'last conversation',
+                  chat_data['recent_message'] == null
+                      ? ''
+                      : chat_data['recent_message'],
                   overflow: TextOverflow.ellipsis,
                 ),
                 trailing: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '10분 전',
-                      style: TextStyle(color: Colors.grey, fontSize: 12.0),
-                    ),
-                    Container(
-                      width: 16.0,
-                      height: 16.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        color: Color(0xff189ab4),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '1',
-                        style: TextStyle(color: Colors.white, fontSize: 12.0),
-                      ),
-                    ),
+                    isReaded == false
+                        ? Container(
+                            width: 16.0,
+                            height: 16.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.0),
+                              color: Color(0xff189ab4),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '!',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 12.0),
+                            ),
+                          )
+                        : SizedBox(),
                     SizedBox()
                   ],
                 ),

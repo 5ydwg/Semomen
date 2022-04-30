@@ -14,7 +14,11 @@ class MyChatBox extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.all(12.0),
-          child: Text(message['message']),
+          constraints: BoxConstraints(maxWidth: 200),
+          child: Text(
+            message['message'],
+            softWrap: true,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4.0),
             color: Colors.yellow,

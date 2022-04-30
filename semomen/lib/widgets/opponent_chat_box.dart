@@ -40,8 +40,12 @@ class OpponentChatBox extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Container(
+                constraints: BoxConstraints(maxWidth: 200),
                 padding: EdgeInsets.all(12.0),
-                child: Text(message['message']),
+                child: Text(
+                  message['message'],
+                  softWrap: true,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4.0),
                   color: Colors.white,

@@ -28,9 +28,8 @@ class PostRepository {
           await adminRef.doc('zf1ISrDcXIkzxeDpv0Ua').get();
       String postId = adminDoc.get('recommended_job');
       final DocumentSnapshot postDoc = await postRef.doc(postId).get();
-
       final PostModel post = PostModel.fromDoc(postDoc);
-
+      print(post);
       return post;
     } on FirebaseException catch (e) {
       throw e;

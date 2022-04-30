@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PostModel{
+class PostModel {
   String postId;
   String uid;
   List<dynamic> career;
@@ -20,7 +20,6 @@ class PostModel{
   String userName;
   String isActivate;
   bool isMentoring;
-
 
   PostModel({
     required this.postId,
@@ -50,25 +49,23 @@ class PostModel{
     return PostModel(
       postId: postDoc.id,
       uid: postData!['uid'],
-      career : postData['career'],
+      career: postData['career'],
       //dateTime : postData['upload_time'].toDate() ?? DateTime.now(),
-      dateTime : postData['date_time'].toDate() ?? DateTime.now(),
-      lecture : postData['guides']['lecture'] ?? [],
-      major : postData['guides']['major'] ?? [],
-      vLog : postData['guides']['v_log'] ?? [],
+      dateTime: postData['date_time'].toDate() ?? DateTime.now(),
+      lecture: postData['guides']['lecture'] ?? [],
+      major: postData['guides']['major'] ?? [],
+      vLog: postData['guides']['v_log'] ?? [],
       //youtube: postData['guides']['you_tube'] ?? [],
-      intro : postData['intro'] ?? '',
-      introTitle : postData['intro_title'] ?? '',
-      job : postData['job'] ?? '',
-      jobDesc : postData['job_desc'] ?? '',
-      jobImgUrl : postData['job_img_url']  ?? '',
-      jobVideoUrl : postData['job_video_url'] ?? '',
-      profileImg : postData['profile_img'] ?? '',
-      userName : postData['user_name'] ?? '',
+      intro: postData['intro'] ?? '',
+      introTitle: postData['intro_title'] ?? '',
+      job: postData['job'] ?? '',
+      jobDesc: postData['job_desc'] ?? '',
+      jobImgUrl: postData['job_img_url'] ?? '',
+      jobVideoUrl: postData['job_video_url'] ?? '',
+      profileImg: postData['profile_img'] ?? '',
+      userName: postData['user_name'] ?? '',
       isActivate: postData['is_activate'] ?? '',
-      isMentoring: postData['is_mentoring'] ?? false,
+      isMentoring: postData['is_mentoring'] ?? 'false',
     );
   }
-
 }
-

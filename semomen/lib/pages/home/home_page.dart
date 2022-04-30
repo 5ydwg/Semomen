@@ -267,7 +267,7 @@ class _HomePageState extends State<HomePage> {
               return Text('');
             }
             if (snapshot.hasData && snapshot.data!.isEmpty) {
-              return Text('Documents does not exist');
+              return Text('신규 등록 가이드가 없습니다.');
             }
             if (snapshot.connectionState == ConnectionState.done) {
               List<PostModel> posts = snapshot.data!;

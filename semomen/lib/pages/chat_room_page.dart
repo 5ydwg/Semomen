@@ -88,9 +88,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
-                    onChanged: (String text) {
-                      print(text);
-                    },
+                    onChanged: (String text) {},
                     onSubmitted: (String text) {},
                   ),
                 ),
@@ -214,4 +212,10 @@ void ChatSubmit(data, message) async {
     "speaker": myData['speaker'],
     'user_name': myData['userName'],
   }).then(((value) => print('작성완료!')));
+
+  await groupChatRef.doc(data['uid']).update({
+    'recent_message': message,
+    'recent_message_created_at': timestampNow,
+    'recent_message_reader': [myData['speaker']]
+  }).then((value) => print('최신 메시지 업데이트 완료'));
 }
