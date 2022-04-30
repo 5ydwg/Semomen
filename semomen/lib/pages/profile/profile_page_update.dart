@@ -94,8 +94,8 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                         children: [
                           ListView(
                             children: [
-                              // _profileBox(size, _user),
-                              // Divider(),
+                              _profileBox(size, _user),
+                              Divider(),
                               _emailInput(_user),
                               Divider(),
                               _pwdInput(_user),
@@ -411,108 +411,108 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
     );
   }
 
-  // Widget _profileBox(Size size, UserModel _user) {
-  //   return SizedBox(
-  //       height: size.height * 0.2,
-  //       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-  //         Stack(children: [
-  //           GestureDetector(
-  //             onTap: () {
-  //               Navigator.push(context,
-  //                   MaterialPageRoute(builder: (context) => ProfileClick()));
-  //             },
-  //             child: ClipOval(
-  //               child: image != null
-  //                   ? Image.file(
-  //                       image!,
-  //                       width: size.width * 0.3,
-  //                       height: size.width * 0.3,
-  //                       fit: BoxFit.cover,
-  //                     )
-  //                   : Image.network(
-  //                       _user.profileImg == 'undefined'
-  //                           ? 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png'
-  //                           : _user.profileImg,
-  //                       fit: BoxFit.cover,
-  //                       width: size.width * 0.3,
-  //                       height: size.width * 0.3,
-  //                       errorBuilder: (context, error, stackTrace) => Container(
-  //                         height: size.width * 0.2,
-  //                         width: size.width * 0.2,
-  //                         color: mainBabyBlue,
-  //                       ),
-  //                     ),
-  //             ),
-  //           ),
-  //           Positioned(
-  //               bottom: size.width * 0.0,
-  //               right: size.width * 0.0,
-  //               child: ClipOval(
-  //                 child: Material(
-  //                   color: Colors.blue,
-  //                   child: InkWell(
-  //                     splashColor: Colors.grey,
-  //                     child: SizedBox(
-  //                         width: 33, height: 33, child: Icon(Icons.camera_alt)),
-  //                     onTap: () {
-  //                       showModalBottomSheet(
-  //                           context: context,
-  //                           builder: ((builder) => bottomSheet(size)));
-  //                     },
-  //                   ),
-  //                 ),
-  //               )),
-  //         ]),
-  //       ]));
-  // }
+  Widget _profileBox(Size size, UserModel _user) {
+    return SizedBox(
+        height: size.height * 0.2,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Stack(children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfileClick()));
+              },
+              child: ClipOval(
+                child: image != null
+                    ? Image.file(
+                        image!,
+                        width: size.width * 0.3,
+                        height: size.width * 0.3,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        _user.profileImg == 'undefined'
+                            ? 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png'
+                            : _user.profileImg,
+                        fit: BoxFit.cover,
+                        width: size.width * 0.3,
+                        height: size.width * 0.3,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: size.width * 0.2,
+                          width: size.width * 0.2,
+                          color: mainBabyBlue,
+                        ),
+                      ),
+              ),
+            ),
+            Positioned(
+                bottom: size.width * 0.0,
+                right: size.width * 0.0,
+                child: ClipOval(
+                  child: Material(
+                    color: Colors.blue,
+                    child: InkWell(
+                      splashColor: Colors.grey,
+                      child: SizedBox(
+                          width: 33, height: 33, child: Icon(Icons.camera_alt)),
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: ((builder) => bottomSheet(size)));
+                      },
+                    ),
+                  ),
+                )),
+          ]),
+        ]));
+  }
 
-  // Widget bottomSheet(size) {
-  //   return Container(
-  //     height: size.height * 0.15,
-  //     width: MediaQuery.of(context).size.width,
-  //     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-  //     child: Column(
-  //       children: [
-  //         Text(
-  //           '이미지',
-  //           style: TextStyle(fontSize: 20),
-  //         ),
-  //         SizedBox(
-  //           height: 20,
-  //         ),
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             TextButton.icon(
-  //               icon: Icon(
-  //                 Icons.camera,
-  //                 size: 50,
-  //               ),
-  //               onPressed: () => pickImage(ImageSource.gallery)
-  //                   .then((_) => Navigator.pop(context)),
-  //               label: Text(
-  //                 '사진첩',
-  //                 style: TextStyle(fontSize: 20),
-  //               ),
-  //             ),
-  //             TextButton.icon(
-  //               icon: Icon(
-  //                 Icons.photo_library,
-  //                 size: 50,
-  //               ),
-  //               onPressed: () => pickImage(ImageSource.camera)
-  //               .then((_) => Navigator.pop(context)),
-  //               label: Text(
-  //                 '사진촬영',
-  //                 style: TextStyle(fontSize: 20),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget bottomSheet(size) {
+    return Container(
+      height: size.height * 0.15,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        children: [
+          Text(
+            '이미지',
+            style: TextStyle(fontSize: 20),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton.icon(
+                icon: Icon(
+                  Icons.camera,
+                  size: 50,
+                ),
+                onPressed: () => pickImage(ImageSource.gallery)
+                    .then((_) => Navigator.pop(context)),
+                label: Text(
+                  '사진첩',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              TextButton.icon(
+                icon: Icon(
+                  Icons.photo_library,
+                  size: 50,
+                ),
+                onPressed: () => pickImage(ImageSource.camera)
+                    .then((_) => Navigator.pop(context)),
+                label: Text(
+                  '사진촬영',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   void showSnackBar(String text) {
     final snackBar =
