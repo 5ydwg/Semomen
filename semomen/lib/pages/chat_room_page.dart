@@ -126,7 +126,7 @@ class ChatArea extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Something went wrong');
-          } else {
+          } else if (snapshot.hasData) {
             Timer(
                 Duration(milliseconds: 500),
                 () => _scrollController
@@ -165,6 +165,8 @@ class ChatArea extends StatelessWidget {
                 ),
               ),
             );
+          } else {
+            return Text('채팅 내용이 없습니다.');
           }
         });
   }
@@ -202,18 +204,19 @@ void ChatSubmit(data, message) async {
   //현재 시간 받아오기
   DateTime currentTime = DateTime.now(); //DateTime
   Timestamp timestampNow = Timestamp.fromDate(currentTime);
+  if (message != null) {
+    await groupChatRef.doc(data['uid']).collection('messages').add({
+      'created_at': timestampNow,
+      'message': message,
+      'profile_img': myData['profileImg'],
+      "speaker": myData['speaker'],
+      'user_name': myData['userName'],
+    }).then(((value) => print('작성완료!')));
 
-  await groupChatRef.doc(data['uid']).collection('messages').add({
-    'created_at': timestampNow,
-    'message': message,
-    'profile_img': myData['profileImg'],
-    "speaker": myData['speaker'],
-    'user_name': myData['userName'],
-  }).then(((value) => print('작성완료!')));
-
-  await groupChatRef.doc(data['uid']).update({
-    'recent_message': message,
-    'recent_message_created_at': timestampNow,
-    'recent_message_reader': [myData['speaker']]
-  }).then((value) => print('최신 메시지 업데이트 완료'));
+    await groupChatRef.doc(data['uid']).update({
+      'recent_message': message,
+      'recent_message_created_at': timestampNow,
+      'recent_message_reader': [myData['speaker']]
+    }).then((value) => print('최신 메시지 업데이트 완료'));
+  }
 }
