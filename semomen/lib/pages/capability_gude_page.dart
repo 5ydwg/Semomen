@@ -80,6 +80,19 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
+              '지름길 길잡이',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          // ExpansionPanelList.radio(
+          //   expandedHeaderPadding: EdgeInsets.all(0.0),
+          //   children: [
+          //     ...lecture(size),
+          //   ],
+          // ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
               '추천 강의',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
