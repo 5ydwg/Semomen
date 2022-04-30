@@ -6,9 +6,7 @@ import 'package:semomen/pages/detail_guide_info_page.dart';
 import 'package:semomen/providers/post_provider.dart';
 import 'package:semomen/providers/search_provider.dart';
 
-enum searchCategory {
-  title, mentor, job
-}
+enum searchCategory { title, mentor, job }
 
 class SearchPage extends StatefulWidget {
   @override
@@ -33,14 +31,18 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);  // 세로 방향 고정
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp]); // 세로 방향 고정
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 0.0,
-        title: const Text('검색', style: TextStyle(color: Colors.black),),
+        title: const Text(
+          '검색',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +51,15 @@ class _SearchPageState extends State<SearchPage> {
           _searchField(size),
           Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text('검색 결과', style: TextStyle(fontSize:16.0,fontWeight: FontWeight.bold),),
+            child: Center(
+              child: Text(
+                '검색 결과',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey),
+              ),
+            ),
           ),
           _searchResult(size),
         ],
@@ -73,12 +83,21 @@ class _SearchPageState extends State<SearchPage> {
             child: Container(
               alignment: Alignment.center,
               height: 50.0,
-              width: (size.width-48.0)/3,
+              width: (size.width - 48.0) / 3,
               decoration: BoxDecoration(
-                color: selectedCategory == searchCategory.title.name? Color(0xff05445e) : Color(0xfff6f6fd),
+                color: selectedCategory == searchCategory.title.name
+                    ? Color(0xff05445e)
+                    : Color(0xfff6f6fd),
                 borderRadius: BorderRadius.circular(4.0),
               ),
-              child: Text('제목', style: TextStyle(color: selectedCategory == searchCategory.title.name? Colors.white:Colors.grey, fontWeight: FontWeight.bold),),
+              child: Text(
+                '제목',
+                style: TextStyle(
+                    color: selectedCategory == searchCategory.title.name
+                        ? Colors.white
+                        : Colors.grey,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           GestureDetector(
@@ -91,12 +110,21 @@ class _SearchPageState extends State<SearchPage> {
             child: Container(
               alignment: Alignment.center,
               height: 50.0,
-              width: (size.width-48.0)/3,
+              width: (size.width - 48.0) / 3,
               decoration: BoxDecoration(
-                color: selectedCategory == searchCategory.mentor.name? Color(0xff05445e) : Color(0xfff6f6fd),
+                color: selectedCategory == searchCategory.mentor.name
+                    ? Color(0xff05445e)
+                    : Color(0xfff6f6fd),
                 borderRadius: BorderRadius.circular(4.0),
               ),
-              child: Text('멘토', style: TextStyle(color: selectedCategory == searchCategory.mentor.name? Colors.white:Colors.grey, fontWeight: FontWeight.bold),),
+              child: Text(
+                '멘토',
+                style: TextStyle(
+                    color: selectedCategory == searchCategory.mentor.name
+                        ? Colors.white
+                        : Colors.grey,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           GestureDetector(
@@ -109,15 +137,25 @@ class _SearchPageState extends State<SearchPage> {
             child: Container(
               alignment: Alignment.center,
               height: 50.0,
-              width: (size.width-48.0)/3,
+              width: (size.width - 48.0) / 3,
               decoration: BoxDecoration(
-                color: selectedCategory == searchCategory.job.name? Color(0xff05445e) : Color(0xfff6f6fd),
+                color: selectedCategory == searchCategory.job.name
+                    ? Color(0xff05445e)
+                    : Color(0xfff6f6fd),
                 borderRadius: BorderRadius.circular(4.0),
               ),
-              child: Text('직업', style: TextStyle(color: selectedCategory == searchCategory.job.name? Colors.white:Colors.grey, fontWeight: FontWeight.bold),),
+              child: Text(
+                '직업',
+                style: TextStyle(
+                    color: selectedCategory == searchCategory.job.name
+                        ? Colors.white
+                        : Colors.grey,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-        ],),
+        ],
+      ),
     );
   }
 
@@ -128,14 +166,20 @@ class _SearchPageState extends State<SearchPage> {
         controller: _searchTextController,
         cursorColor: Colors.black,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search, color: Colors.grey,),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.grey,
+          ),
           suffixIcon: IconButton(
             splashRadius: 1.0,
             onPressed: () {
               _searchTextController.clear();
               context.read<SearchProvider>().resetResults();
             },
-            icon: Icon(Icons.cancel, color: Colors.grey,),
+            icon: Icon(
+              Icons.cancel,
+              color: Colors.grey,
+            ),
           ),
           hintText: '검색 단어를 입력해주세요.',
           filled: true,
@@ -145,19 +189,19 @@ class _SearchPageState extends State<SearchPage> {
             borderRadius: BorderRadius.circular(12.0),
           ),
         ),
-        onChanged: (String text) {
-
-        },
+        onChanged: (String text) {},
         onSubmitted: (String text) {
-          context.read<SearchProvider>().getSearchResult(category: selectedCategory, searchText: _searchTextController.text);
+          context.read<SearchProvider>().getSearchResult(
+              category: selectedCategory,
+              searchText: _searchTextController.text);
         },
-
       ),
     );
   }
+
   Widget _searchResult(Size size) {
     List<PostModel> posts = context.watch<SearchProvider>().searchResults;
-    return  Expanded(
+    return Expanded(
       child: ListView.builder(
           itemCount: posts.length,
           itemBuilder: (context, index) {
@@ -166,7 +210,8 @@ class _SearchPageState extends State<SearchPage> {
               padding: const EdgeInsets.all(4.0),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailGuideInfoPage(post: post)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => DetailGuideInfoPage(post: post)));
                 },
                 child: Card(
                   child: IntrinsicHeight(
@@ -178,30 +223,54 @@ class _SearchPageState extends State<SearchPage> {
                             width: size.width * 0.3,
                             height: size.width * 0.3,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.0), color: Colors.grey,
+                              borderRadius: BorderRadius.circular(4.0),
+                              color: Colors.grey,
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                onError: (object, stackTrace) {
-
-                                },
+                                onError: (object, stackTrace) {},
                                 image: NetworkImage(
                                   post.jobImgUrl,
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 12.0,),
+                          SizedBox(
+                            width: 12.0,
+                          ),
                           SizedBox(
                             width: size.width * 0.55,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(post.introTitle, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis,),
-                                Text(post.userName+' 멘토', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
-                                Text(post.intro, style: TextStyle(color: Colors.grey), maxLines: 2, overflow: TextOverflow.ellipsis,),
-                                Text('⭐⭐⭐⭐⭐ 5.0', style: TextStyle(color: Colors.yellow[600], fontWeight: FontWeight.bold),),
-                              ],),
+                                Text(
+                                  post.introTitle,
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  post.userName + ' 멘토',
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  post.intro,
+                                  style: TextStyle(color: Colors.grey),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  '⭐⭐⭐⭐⭐ 5.0',
+                                  style: TextStyle(
+                                      color: Colors.yellow[600],
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),

@@ -34,6 +34,7 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
       ),
     );
   }
+
   List<ExpansionPanelRadio> lecture(Size size) {
     final lecture = widget.post.lecture.toList();
     return lecture.asMap().entries.map((entry) {
@@ -79,6 +80,19 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
+              '지름길 길잡이',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          // ExpansionPanelList.radio(
+          //   expandedHeaderPadding: EdgeInsets.all(0.0),
+          //   children: [
+          //     ...lecture(size),
+          //   ],
+          // ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
               '추천 강의',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -90,44 +104,48 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
             ],
           ),
           Divider(),
-          widget.post.major.isNotEmpty ? Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  '추천 전공',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              ExpansionPanelList.radio(
-                expandedHeaderPadding: EdgeInsets.all(0.0),
-                children: [
-                  ...major(size),
-                ],
-              ),
-              Divider(),
-            ],
-          ) : Container(),
+          widget.post.major.isNotEmpty
+              ? Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        '추천 전공',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ExpansionPanelList.radio(
+                      expandedHeaderPadding: EdgeInsets.all(0.0),
+                      children: [
+                        ...major(size),
+                      ],
+                    ),
+                    Divider(),
+                  ],
+                )
+              : Container(),
 
-          widget.post.vLog.isNotEmpty ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  '추천 브이로그',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              ExpansionPanelList.radio(
-                expandedHeaderPadding: EdgeInsets.all(0.0),
-                children: [
-                  ...vLog(size),
-                ],
-              ),
-              Divider(),
-            ],
-          ) : Container(),
+          widget.post.vLog.isNotEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        '추천 브이로그',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ExpansionPanelList.radio(
+                      expandedHeaderPadding: EdgeInsets.all(0.0),
+                      children: [
+                        ...vLog(size),
+                      ],
+                    ),
+                    Divider(),
+                  ],
+                )
+              : Container(),
           // widget.post.youtube!.isNotEmpty ? Column(
           //   crossAxisAlignment: CrossAxisAlignment.start,
           //   children: [
@@ -146,7 +164,6 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
           //     ),
           //   ],
           // ) : Container(),
-
         ],
       ),
     );
@@ -224,8 +241,13 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(content['desc']),
-                  SizedBox(height: 8.0,),
-                  Text(content['url'], style: TextStyle(color: Colors.blue),),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Text(
+                    content['url'],
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ],
               ),
             ),
@@ -234,5 +256,4 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
       ),
     );
   }
-
 }

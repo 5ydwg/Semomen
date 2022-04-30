@@ -8,84 +8,92 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  get menu => null;
+  //get menu => null;
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            "이용권 선택",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-            ),
-          ),
-          backgroundColor: Colors.white,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search_outlined, color: Colors.grey),
-              onPressed: () {
-                print("Pay 우측 상단 아이콘 클릭 됨");
-              },
-            ),
-          ],
-
-          /// Tip : AppBar 하단에 TabBar를 만들어 줍니다.
-          bottom: TabBar(
-            isScrollable: false,
-            indicatorColor: Colors.lightGreen,
-            indicatorWeight: 4,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
-            labelStyle: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            ),
-            tabs: [
-              Tab(text: "횟수권"),
-              Tab(text: "정기권"),
-              Tab(text: "패키지"),
-            ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      //앱바
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: const Text(
+          '구매하기',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
           ),
         ),
-        body: TabBarView(
-          children: [
-            Column(),
-
-            // Positioned(
-            //   bottom: 18,
-            //   left: 24,
-            //   right: 24,
-            //   child: GestureDetector(
-            //     onTap: () {
-            //       print("예약하기 클릭 됨");
-            //     },
-            //     child: Container(
-            //       width: double.infinity,
-            //       height: 58,
-            //       color: Colors.red,
-            //       alignment: Alignment.center,
-            //       child: Text(
-            //         "예약하기",
-            //         style: TextStyle(
-            //           color: Colors.white,
-            //           fontSize: 13,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-
-            Center(child: Text("나만의 메뉴")),
-
-            Center(child: Text("홀케이크 예약")),
-          ],
-        ),
+      ),
+      body: Column(
+        children: [
+          Spacer(),
+          Container(
+            padding: const EdgeInsets.only(
+                top: 1.0, bottom: 1.0, left: 12, right: 12),
+            height: 20,
+            color: Colors.grey.shade100,
+            child: Text(
+              '전체동의',
+              style: TextStyle(color: Colors.black
+                  //fontStyle
+                  ),
+            ),
+            alignment: Alignment.topLeft,
+          ),
+          Divider(
+            height: 0.0,
+          ),
+          Container(
+            padding: const EdgeInsets.only(
+                top: 1.0, bottom: 1.0, left: 12, right: 12),
+            height: 60,
+            color: Colors.grey.shade100,
+            child: Text(
+              '동의1',
+              style: TextStyle(color: Colors.black
+                  //fontStyle
+                  ),
+            ),
+            alignment: Alignment.topLeft,
+          ),
+          Container(
+            padding: const EdgeInsets.only(
+                top: 12.0, bottom: 12.0, left: 12, right: 12),
+            height: 80,
+            color: Colors.grey,
+            child: Text(
+              '결제금액',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white
+                  //fontStyle
+                  ),
+            ),
+            alignment: Alignment.centerLeft,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PaymentPage()),
+              );
+            },
+            child: Container(
+              height: 50,
+              color: Colors.lightGreen,
+              child: Text(
+                '결제하기',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white
+                        //fontStyle
+                        ),
+              ),
+              alignment: Alignment.center,
+            ),
+          ),
+        ],
       ),
     );
   }
