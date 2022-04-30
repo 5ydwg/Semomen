@@ -117,10 +117,6 @@ class ChatArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScrollController _scrollController = ScrollController();
-    Timer(
-        Duration(milliseconds: 500),
-        () => _scrollController
-            .jumpTo(_scrollController.position.maxScrollExtent));
     return StreamBuilder<QuerySnapshot<Object?>>(
         stream: groupChatRef
             .doc(data['uid'])
@@ -130,9 +126,11 @@ class ChatArea extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Something went wrong');
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
           } else {
+            Timer(
+                Duration(milliseconds: 500),
+                () => _scrollController
+                    .jumpTo(_scrollController.position.maxScrollExtent));
             //받아올 chatMessage
             List chatMessages = [];
             //firebase에서 데이터 받아오기
