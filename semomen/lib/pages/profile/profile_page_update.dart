@@ -14,6 +14,7 @@ import 'package:semomen/constants/constant.dart';
 import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/model/user_model.dart';
+import 'package:semomen/pages/profile/image_widget.dart';
 
 import '../../providers/user_provider.dart';
 
@@ -95,8 +96,8 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                         children: [
                           ListView(
                             children: [
-                              _profileBox(size, _user),
-                              Divider(),
+                              // _profileBox(size, _user),
+                              // Divider(),
                               _emailInput(_user),
                               Divider(),
                               _pwdInput(_user),
@@ -197,55 +198,28 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
           '생년월일',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
         ),
-        GestureDetector(
-          onTap: () {
-            showPickerDate(context, _user);
-          },
-          child: TextField(
-            controller: _birthController,
-            enabled: false,
-            cursorColor: Colors.black,
-            decoration: InputDecoration(
-              hintText: '생년월일을 선택해주세요.',
-              filled: true,
-              fillColor: Color(0xfff6f6fd),
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
+        TextField(
+          enabled: false,
+          controller: _phoneNumberController,
+          cursorColor: Colors.black,
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.calendar_today,
+              color: Colors.grey,
             ),
-            onChanged: (String text) {},
-            onSubmitted: (String text) {},
+            hintText: _user.birth,
+            filled: true,
+            fillColor: Color(0xfff6f6fd),
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(12.0),
+            ),
           ),
+          onChanged: (String text) {},
+          onSubmitted: (String text) {},
         ),
       ],
     );
-  }
-
-  // use flutter_picker: ^2.0.3
-  void showPickerDate(BuildContext context, _user) {
-    Picker(
-        hideHeader: true,
-        adapter: DateTimePickerAdapter(),
-        title: Text("생년월일"),
-        selectedTextStyle: TextStyle(color: Colors.blue),
-        cancelText: '취소',
-        confirmText: '확인',
-        onConfirm: (Picker picker, List value) {
-          DateTime? _selectDate =
-              (picker.adapter as DateTimePickerAdapter).value;
-          String _year;
-          String _month;
-          String _date;
-          if (_selectDate != null) {
-            _year = _selectDate.year.toString();
-            _month = _selectDate.month.toString();
-            _date = _selectDate.day.toString();
-            _birthController.text = '$_year' + '-' + '$_month' + '-' + '$_date';
-          } else {
-            _birthController.text = 'error';
-          }
-        }).showDialog(context);
   }
 
   Widget _jobInput(_user) {
@@ -298,22 +272,13 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
         ),
         TextField(
+          enabled: false,
           controller: _userNameController,
           cursorColor: Colors.black,
           decoration: InputDecoration(
             prefixIcon: Icon(
               Icons.account_circle_outlined,
               color: Colors.grey,
-            ),
-            suffixIcon: IconButton(
-              splashRadius: 1.0,
-              onPressed: () {
-                _userNameController.clear();
-              },
-              icon: Icon(
-                Icons.cancel,
-                color: Colors.grey,
-              ),
             ),
             hintText: _user.userName,
             filled: true,
@@ -414,7 +379,6 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
     );
   }
 
-
   Widget _emailInput(_user) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,22 +388,13 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
         ),
         TextField(
+          enabled: false,
           controller: _emailController,
           cursorColor: Colors.black,
           decoration: InputDecoration(
             prefixIcon: Icon(
               Icons.email_outlined,
               color: Colors.grey,
-            ),
-            suffixIcon: IconButton(
-              splashRadius: 1.0,
-              onPressed: () {
-                _emailController.clear();
-              },
-              icon: Icon(
-                Icons.cancel,
-                color: Colors.grey,
-              ),
             ),
             hintText: _user.email,
             filled: true,
@@ -456,45 +411,108 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
     );
   }
 
-  Widget _profileBox(Size size, UserModel user) {
-    return SizedBox(
-      height: size.height * 0.3,
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        ClipOval(
-          child: image != null
-              ? Image.file(
-                  image!,
-                  width: size.width * 0.2,
-                  height: size.width * 0.2,
-                  fit: BoxFit.cover,
-                )
-              : Image.network(
-                  'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png',
-                  fit: BoxFit.cover,
-                  width: size.width * 0.2,
-                  height: size.width * 0.2,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: size.width * 0.2,
-                    width: size.width * 0.2,
-                    color: mainBabyBlue,
-                  ),
-                ),
-        ),
-        const SizedBox(height: 28),
-        ElevatedButton.icon(
-          label: Text('Pick Gallery'),
-          icon: Icon(Icons.camera_alt_outlined),
-          onPressed: () => pickImage(ImageSource.gallery),
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton.icon(
-          label: Text('Pick Camera'),
-          icon: Icon(Icons.camera_alt_outlined),
-          onPressed: () => pickImage(ImageSource.camera),
-        )
-      ]),
-    );
-  }
+  // Widget _profileBox(Size size, UserModel _user) {
+  //   return SizedBox(
+  //       height: size.height * 0.2,
+  //       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+  //         Stack(children: [
+  //           GestureDetector(
+  //             onTap: () {
+  //               Navigator.push(context,
+  //                   MaterialPageRoute(builder: (context) => ProfileClick()));
+  //             },
+  //             child: ClipOval(
+  //               child: image != null
+  //                   ? Image.file(
+  //                       image!,
+  //                       width: size.width * 0.3,
+  //                       height: size.width * 0.3,
+  //                       fit: BoxFit.cover,
+  //                     )
+  //                   : Image.network(
+  //                       _user.profileImg == 'undefined'
+  //                           ? 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png'
+  //                           : _user.profileImg,
+  //                       fit: BoxFit.cover,
+  //                       width: size.width * 0.3,
+  //                       height: size.width * 0.3,
+  //                       errorBuilder: (context, error, stackTrace) => Container(
+  //                         height: size.width * 0.2,
+  //                         width: size.width * 0.2,
+  //                         color: mainBabyBlue,
+  //                       ),
+  //                     ),
+  //             ),
+  //           ),
+  //           Positioned(
+  //               bottom: size.width * 0.0,
+  //               right: size.width * 0.0,
+  //               child: ClipOval(
+  //                 child: Material(
+  //                   color: Colors.blue,
+  //                   child: InkWell(
+  //                     splashColor: Colors.grey,
+  //                     child: SizedBox(
+  //                         width: 33, height: 33, child: Icon(Icons.camera_alt)),
+  //                     onTap: () {
+  //                       showModalBottomSheet(
+  //                           context: context,
+  //                           builder: ((builder) => bottomSheet(size)));
+  //                     },
+  //                   ),
+  //                 ),
+  //               )),
+  //         ]),
+  //       ]));
+  // }
+
+  // Widget bottomSheet(size) {
+  //   return Container(
+  //     height: size.height * 0.15,
+  //     width: MediaQuery.of(context).size.width,
+  //     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+  //     child: Column(
+  //       children: [
+  //         Text(
+  //           '이미지',
+  //           style: TextStyle(fontSize: 20),
+  //         ),
+  //         SizedBox(
+  //           height: 20,
+  //         ),
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             TextButton.icon(
+  //               icon: Icon(
+  //                 Icons.camera,
+  //                 size: 50,
+  //               ),
+  //               onPressed: () => pickImage(ImageSource.gallery)
+  //                   .then((_) => Navigator.pop(context)),
+  //               label: Text(
+  //                 '사진첩',
+  //                 style: TextStyle(fontSize: 20),
+  //               ),
+  //             ),
+  //             TextButton.icon(
+  //               icon: Icon(
+  //                 Icons.photo_library,
+  //                 size: 50,
+  //               ),
+  //               onPressed: () => pickImage(ImageSource.camera)
+  //               .then((_) => Navigator.pop(context)),
+  //               label: Text(
+  //                 '사진촬영',
+  //                 style: TextStyle(fontSize: 20),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   void showSnackBar(String text) {
     final snackBar =
