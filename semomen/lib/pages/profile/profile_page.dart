@@ -133,19 +133,19 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
 
           //결제-설정
-          ListTile(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TicketPage()),
-              );
-            },
-            leading: Text('이용권 구매'),
-            dense: true,
-          ),
-          Divider(
-            height: 0.1,
-          ),
+          // ListTile(
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => TicketPage()),
+          //     );
+          //   },
+          //   leading: Text('이용권 구매'),
+          //   dense: true,
+          // ),
+          // Divider(
+          //   height: 0.1,
+          // ),
         ],
       ),
     );
