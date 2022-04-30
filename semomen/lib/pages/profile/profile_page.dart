@@ -10,7 +10,7 @@ import 'package:semomen/pages/profile/profile_page_update.dart';
 import 'package:semomen/pages/purchased_guide_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 
-import '../payment_page.dart';
+import '../ticket_page.dart';
 import '../service_center_page.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -137,7 +137,7 @@ class _ProfilePageState extends State<ProfilePage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PaymentPage()),
+                MaterialPageRoute(builder: (context) => TicketPage()),
               );
             },
             leading: Text('이용권 구매'),
