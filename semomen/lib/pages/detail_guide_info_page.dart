@@ -26,7 +26,6 @@ import 'package:semomen/pages/review_page.dart';
 // provider
 import 'package:semomen/providers/review_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:semomen/providers/mentee_provider.dart';
 
 class DetailGuideInfoPage extends StatefulWidget {
   final PostModel post;
@@ -87,6 +86,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
         [DeviceOrientation.portraitUp]); //화면을 세로 방향으로 고정하기
     Size size = MediaQuery.of(context).size; //화면의 size 가져오기
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -95,6 +95,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
           '가이드',
           style: TextStyle(color: Colors.black),
         ),
+        elevation: 0,
       ),
       body: ListView(
         children: [
@@ -125,7 +126,17 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
               ],
             ),
           ),
-          widget.post.jobVideoUrl.isNotEmpty ? _detailVideo(size) : SizedBox(),
+          _mentorInformation(size),
+          Divider(
+            height: 20.0,
+          ),
+          widget.post.jobVideoUrl.isNotEmpty
+              ? _detailVideo(size)
+              : Image.network(
+                  widget.post.jobImgUrl,
+                  width: size.width,
+                  fit: BoxFit.fitWidth,
+                ),
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,10 +173,6 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
             height: 20.0,
           ),
           // _capabilitiesGuide(size),
-          _mentorInformation(size),
-          Divider(
-            height: 20.0,
-          ),
           _reviews(size),
           Divider(
             height: 20.0,
@@ -303,7 +310,7 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                           ],
                         ));
           }
-          return CircularProgressIndicator();
+          return SizedBox();
         });
   }
 
@@ -325,11 +332,6 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Center(
-            child: Text(
-          '멘토',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-        )),
         IntrinsicHeight(
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -384,19 +386,6 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                     ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      '현재 멘토링은 준비중에 있습니다.',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
           ),

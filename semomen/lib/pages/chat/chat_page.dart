@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:semomen/pages/chat_room_page.dart';
+import 'package:semomen/pages/chat/chat_room_page.dart';
 import '../../constants/db_constants.dart';
 
 class ChatPage extends StatefulWidget {
@@ -71,7 +71,9 @@ class ChatList extends StatelessWidget {
           if (snapshot.hasError) {
             return Text('Something went wrong');
           } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.data!.data() == null) {
+            return SizedBox();
           } else {
             Map<String, dynamic> chat_data =
                 snapshot.data!.data() as Map<String, dynamic>;

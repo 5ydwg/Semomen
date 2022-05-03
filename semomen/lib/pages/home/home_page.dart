@@ -132,7 +132,8 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.all(8.0),
                 height: size.width * 0.625,
                 width: size.width,
-                child: Center(child: CircularProgressIndicator()));
+                child:
+                    Center(child: Center(child: CircularProgressIndicator())));
           }),
     );
   }
@@ -253,7 +254,7 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         });
   }
 
