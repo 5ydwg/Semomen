@@ -26,6 +26,7 @@ class _ChatPageState extends State<ChatPage> {
             List data = snapshot.data!.get('mentor');
 
             return Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 backgroundColor: Colors.white,
                 centerTitle: true,
@@ -33,6 +34,7 @@ class _ChatPageState extends State<ChatPage> {
                   '채팅',
                   style: TextStyle(color: Colors.black),
                 ),
+                elevation: 0,
               ),
               body: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -84,8 +86,6 @@ class ChatList extends StatelessWidget {
 
             return GestureDetector(
               onTap: () async {
-                print('test');
-
                 if (!chatDataReader.contains(uid)) {
                   await groupChatRef.doc(data['uid']).update({
                     'recent_message_reader': [...chatDataReader, uid]

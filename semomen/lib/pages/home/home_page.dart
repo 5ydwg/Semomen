@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
         [DeviceOrientation.portraitUp]); //화면을 세로 방향으로 고정하기
     Size size = MediaQuery.of(context).size; //화면의 size 가져오기
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,

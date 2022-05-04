@@ -9,6 +9,7 @@ import 'package:semomen/pages/my_coupon_page.dart';
 import 'package:semomen/pages/profile/profile_page_update.dart';
 import 'package:semomen/pages/purchased_guide_page.dart';
 import 'package:semomen/providers/user_provider.dart';
+import 'package:semomen/pages/profile/mentor_list.dart';
 
 import '../ticket_page.dart';
 import '../service_center_page.dart';
@@ -39,39 +40,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         _profileBox(size, _user),
-                        Card(
-                          child: Column(
-                            children: [
-                              // ListTile(
-                              //   onTap: () {
-                              //     Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //           builder: (context) =>
-                              //               PurchasedGuidePage()),
-                              //     );
-                              //   },
-                              //   leading: Text('구매 가이드'),
-                              //   dense: true,
-                              // ),
-                              ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MyCouponPage()),
-                                  );
-                                },
-                                leading: Text('쿠폰함'),
-                                dense: true,
-                              ),
-                              Divider(
-                                height: 0.0,
-                              ),
-                            ],
-                          ),
-                        ),
+                        _couponBox(),
                         _settingsBox(),
+                        _mentorBox(),
                         Spacer(),
                         _signOutBox(),
                       ],
@@ -84,20 +55,47 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Widget _couponBox() {
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyCouponPage()),
+          );
+        },
+        leading: Text('쿠폰함'),
+        dense: true,
+      ),
+    );
+  }
+
   Widget _signOutBox() {
     return Card(
       child: ListTile(
+        onTap: () {
+          FirebaseAuth.instance.signOut();
+        },
         leading: Text(
           '로그아웃',
           style:
               TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
         ),
-        trailing: IconButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut();
-          },
-          icon: Icon(Icons.chevron_right),
-        ),
+        dense: true,
+      ),
+    );
+  }
+
+  Widget _mentorBox() {
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MentorList()),
+          );
+        },
+        leading: Text('내 멘토 리스트'),
         dense: true,
       ),
     );
