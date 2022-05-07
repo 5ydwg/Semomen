@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:semomen/constants/constant.dart';
 
 import '../../constants/db_constants.dart';
+
+//page
 import 'chat_area.dart';
+import './chat_room_dialog.dart';
 
 class ChatRoomPage extends StatefulWidget {
   const ChatRoomPage({Key? key, required this.data}) : super(key: key);
@@ -28,8 +32,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+      drawerEnableOpenDragGesture: true,
+      endDrawer: Drawer(
+        child: ChatDrawer(data : widget.data),
+      ),
       appBar: AppBar(
-        backgroundColor: mainBabyBlue.withOpacity(0.5),
+        backgroundColor: mainBabyBlue.withOpacity(1),
         elevation: 0.0,
         centerTitle: true,
         leading: IconButton(
@@ -39,10 +47,34 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             Navigator.pop(context);
           },
         ),
-        title: Text(
-          '${widget.data['user_name']}',
-          style: TextStyle(color: Colors.black),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '${widget.data['user_name']}',
+              style: TextStyle(color: Colors.black),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Icon(
+              CupertinoIcons.circle_fill,
+              color: Colors.limeAccent[400],
+              size: 15,
+            )
+          ],
         ),
+        actions: [
+          Builder(builder: (context) {
+            return IconButton(
+              color: Colors.black,
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+              icon: Icon(CupertinoIcons.ellipsis_vertical),
+            );
+          })
+        ],
       ),
       body: Column(
         children: [
@@ -105,6 +137,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   }
 }
 
+// chat 메시지 전달 함수
 void ChatSubmit(data, message) async {
   //현재 내 uid 정보 받아오기
   String uid = FirebaseAuth.instance.currentUser!.uid;

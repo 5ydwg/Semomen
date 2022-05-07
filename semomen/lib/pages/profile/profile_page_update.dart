@@ -6,17 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_html/html_parser.dart';
-import 'package:flutter_picker/Picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/constants/db_constants.dart';
-import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/profile/image_widget.dart';
-
-import '../../providers/user_provider.dart';
+import 'package:semomen/repositories/firestorage_repository.dart';
 
 class ProfilePageUpdate extends StatefulWidget {
   ProfilePageUpdate({Key? key}) : super(key: key);
@@ -26,6 +21,7 @@ class ProfilePageUpdate extends StatefulWidget {
 }
 
 class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
+  FirestorageRepository _firestorageRepository = FirestorageRepository();
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   CollectionReference mentees =
       FirebaseFirestore.instance.collection('mentees');
@@ -41,7 +37,10 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
   File? image;
   Future pickImage(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: source);
+      final image = await ImagePicker().pickImage(
+        source: source,
+        imageQuality: 50,
+      );
       if (image == null) return;
 
       final imageTemporary = File(image.path);
@@ -123,8 +122,11 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                                       primary: mainNavyBlue),
                                   onPressed: () {
                                     FocusScope.of(context).unfocus();
-                                    _requestMentoringButton(
-                                        context, size, _user); // 포커스 해제
+                                    _modifiedButton(
+                                      context,
+                                      size,
+                                      _user,
+                                    ); // 포커스 해제
                                   },
                                   child: Text('수정하기')),
                             ),
@@ -486,7 +488,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
               TextButton.icon(
                 icon: Icon(
                   Icons.camera,
-                  size: 50,
+                  size: 40,
                 ),
                 onPressed: () => pickImage(ImageSource.gallery)
                     .then((_) => Navigator.pop(context)),
@@ -498,7 +500,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
               TextButton.icon(
                 icon: Icon(
                   Icons.photo_library,
-                  size: 50,
+                  size: 40,
                 ),
                 onPressed: () => pickImage(ImageSource.camera)
                     .then((_) => Navigator.pop(context)),
@@ -520,7 +522,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
-  void _requestMentoringButton(BuildContext context, Size size, _user) async {
+  void _modifiedButton(BuildContext context, Size size, _user) async {
     //mentor 컬렉션 내 mentee_uid에 필요한 데이터 객체 생성
     Map<String, dynamic>? myData = {};
 
@@ -530,7 +532,13 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
       'phoneNumber': _phoneNumberController.text,
     };
 
+    _firestorageRepository.uploadImageFile(_user.uid, image!);
+
     await FirebaseFirestore.instance.collection('users').doc(_user.uid).update({
+      'profile_img':
+          'https://firebasestorage.googleapis.com/v0/b/kkumjik1.appspot.com/o/image%2Fprofile_img%2F' +
+              _user.uid +
+              '?alt=media',
       'job': myData['job'],
       'phone_number': myData['phoneNumber'],
     }).then((value) {
