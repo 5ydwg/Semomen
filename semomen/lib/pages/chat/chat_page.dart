@@ -25,26 +25,67 @@ class _ChatPageState extends State<ChatPage> {
           } else {
             List data = snapshot.data!.get('mentor');
 
-            return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.white,
-                centerTitle: true,
-                title: Text(
-                  '채팅',
-                  style: TextStyle(color: Colors.black),
+            return DefaultTabController(
+              length: 2,
+              child: Scaffold(
+                appBar: AppBar(
+                  automaticallyImplyLeading: false,
+                  centerTitle: true,
+                  title: Text(
+                    "채팅",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  backgroundColor: Colors.white,
+
+                  /// Tip : AppBar 하단에 TabBar를 만들어 줍니다.
+                  bottom: TabBar(
+                    isScrollable: false,
+                    indicatorColor: Colors.black,
+                    indicatorWeight: 4,
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.grey,
+                    labelStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    tabs: [
+                      Tab(text: "단체"),
+                      Tab(text: "1:1"),
+                    ],
+                  ),
+                ),
+                body: TabBarView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: ListView.separated(
+                          itemBuilder: (context, index) =>
+                              data[index]['uid'] != 'undefined'
+                                  ? ChatList(data: data[index], uid: uid)
+                                  : SizedBox(),
+                          separatorBuilder: (context, index) => Divider(),
+                          itemCount: data.length),
+                    ),
+                    Center(child: Text("준비중입니다")),
+                  ],
                 ),
               ),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: ListView.separated(
-                    itemBuilder: (context, index) =>
-                        data[index]['uid'] != 'undefined'
-                            ? ChatList(data: data[index], uid: uid)
-                            : SizedBox(),
-                    separatorBuilder: (context, index) => Divider(),
-                    itemCount: data.length),
-              ),
             );
+            // return Scaffold(
+            //   appBar: AppBar(
+            //     backgroundColor: Colors.white,
+            //     centerTitle: true,
+            //     title: Text(
+            //       '채팅',
+            //       style: TextStyle(color: Colors.black),
+            //     ),
+            //   ),
+
+            // );
           }
         });
   }

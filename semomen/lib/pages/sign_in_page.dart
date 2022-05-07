@@ -48,7 +48,7 @@ class _SignInPageState extends State<SignInPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            '세상의 모든 멘토',
+                            '&.ssul',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24.0,

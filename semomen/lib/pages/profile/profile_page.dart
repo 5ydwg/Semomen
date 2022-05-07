@@ -68,6 +68,21 @@ class _ProfilePageState extends State<ProfilePage> {
                               Divider(
                                 height: 0.0,
                               ),
+
+                              ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TicketPage()),
+                                  );
+                                },
+                                leading: Text('이용권 구매'),
+                                dense: true,
+                              ),
+                              Divider(
+                                height: 0.1,
+                              ),
                             ],
                           ),
                         ),
@@ -131,21 +146,6 @@ class _ProfilePageState extends State<ProfilePage> {
           Divider(
             height: 0.0,
           ),
-
-          //결제-설정
-          // ListTile(
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => TicketPage()),
-          //     );
-          //   },
-          //   leading: Text('이용권 구매'),
-          //   dense: true,
-          // ),
-          // Divider(
-          //   height: 0.1,
-          // ),
         ],
       ),
     );

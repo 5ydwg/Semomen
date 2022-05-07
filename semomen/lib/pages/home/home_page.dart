@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         elevation: 0.0,
         title: Text(
-          '세상의 모든 멘토',
+          '&.ssul',
           style: TextStyle(fontWeight: FontWeight.bold, color: mainBlueGrotto),
         ),
       ),
