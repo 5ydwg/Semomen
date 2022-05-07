@@ -7,6 +7,7 @@ import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/my_coupon_page.dart';
 import 'package:semomen/pages/profile/profile_page_update.dart';
+import 'package:semomen/pages/ticket_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 import 'package:semomen/pages/profile/mentor_list.dart';
 import '../service_center_page.dart';
@@ -37,7 +38,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         _profileBox(size, _user),
-<<<<<<< HEAD
                         Card(
                           child: Column(
                             children: [
@@ -85,9 +85,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             ],
                           ),
                         ),
-=======
-                        _couponBox(),
->>>>>>> origin/dev
                         _settingsBox(),
                         _mentorBox(),
                         Spacer(),
