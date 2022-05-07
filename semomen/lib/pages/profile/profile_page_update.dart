@@ -6,17 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_html/html_parser.dart';
-import 'package:flutter_picker/Picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/constants/db_constants.dart';
-import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/profile/image_widget.dart';
-
-import '../../providers/user_provider.dart';
+import 'package:semomen/repositories/firestorage_repository.dart';
 
 class ProfilePageUpdate extends StatefulWidget {
   ProfilePageUpdate({Key? key}) : super(key: key);
@@ -26,6 +21,7 @@ class ProfilePageUpdate extends StatefulWidget {
 }
 
 class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
+  FirestorageRepository _firestorageRepository = FirestorageRepository();
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   CollectionReference mentees =
       FirebaseFirestore.instance.collection('mentees');
@@ -41,7 +37,10 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
   File? image;
   Future pickImage(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: source);
+      final image = await ImagePicker().pickImage(
+        source: source,
+        imageQuality: 50,
+      );
       if (image == null) return;
 
       final imageTemporary = File(image.path);
@@ -73,9 +72,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else {
+        } else if (snapshot.hasData) {
           UserModel _user = UserModel.fromDoc(snapshot.data!);
           return Scaffold(
               appBar: AppBar(
@@ -96,8 +93,8 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                         children: [
                           ListView(
                             children: [
-                              // _profileBox(size, _user),
-                              // Divider(),
+                              _profileBox(size, _user),
+                              Divider(),
                               _emailInput(_user),
                               Divider(),
                               _pwdInput(_user),
@@ -125,8 +122,11 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                                       primary: mainNavyBlue),
                                   onPressed: () {
                                     FocusScope.of(context).unfocus();
-                                    _requestMentoringButton(
-                                        context, size, _user); // 포커스 해제
+                                    _modifiedButton(
+                                      context,
+                                      size,
+                                      _user,
+                                    ); // 포커스 해제
                                   },
                                   child: Text('수정하기')),
                             ),
@@ -143,6 +143,8 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                       )),
                 ],
               ));
+        } else {
+          return Text('데이터 준비중');
         }
       },
     );
@@ -411,108 +413,108 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
     );
   }
 
-  // Widget _profileBox(Size size, UserModel _user) {
-  //   return SizedBox(
-  //       height: size.height * 0.2,
-  //       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-  //         Stack(children: [
-  //           GestureDetector(
-  //             onTap: () {
-  //               Navigator.push(context,
-  //                   MaterialPageRoute(builder: (context) => ProfileClick()));
-  //             },
-  //             child: ClipOval(
-  //               child: image != null
-  //                   ? Image.file(
-  //                       image!,
-  //                       width: size.width * 0.3,
-  //                       height: size.width * 0.3,
-  //                       fit: BoxFit.cover,
-  //                     )
-  //                   : Image.network(
-  //                       _user.profileImg == 'undefined'
-  //                           ? 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png'
-  //                           : _user.profileImg,
-  //                       fit: BoxFit.cover,
-  //                       width: size.width * 0.3,
-  //                       height: size.width * 0.3,
-  //                       errorBuilder: (context, error, stackTrace) => Container(
-  //                         height: size.width * 0.2,
-  //                         width: size.width * 0.2,
-  //                         color: mainBabyBlue,
-  //                       ),
-  //                     ),
-  //             ),
-  //           ),
-  //           Positioned(
-  //               bottom: size.width * 0.0,
-  //               right: size.width * 0.0,
-  //               child: ClipOval(
-  //                 child: Material(
-  //                   color: Colors.blue,
-  //                   child: InkWell(
-  //                     splashColor: Colors.grey,
-  //                     child: SizedBox(
-  //                         width: 33, height: 33, child: Icon(Icons.camera_alt)),
-  //                     onTap: () {
-  //                       showModalBottomSheet(
-  //                           context: context,
-  //                           builder: ((builder) => bottomSheet(size)));
-  //                     },
-  //                   ),
-  //                 ),
-  //               )),
-  //         ]),
-  //       ]));
-  // }
+  Widget _profileBox(Size size, UserModel _user) {
+    return SizedBox(
+        height: size.height * 0.2,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Stack(children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfileClick()));
+              },
+              child: ClipOval(
+                child: image != null
+                    ? Image.file(
+                        image!,
+                        width: size.width * 0.3,
+                        height: size.width * 0.3,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        _user.profileImg == 'undefined'
+                            ? 'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_1280.png'
+                            : _user.profileImg,
+                        fit: BoxFit.cover,
+                        width: size.width * 0.3,
+                        height: size.width * 0.3,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: size.width * 0.2,
+                          width: size.width * 0.2,
+                          color: mainBabyBlue,
+                        ),
+                      ),
+              ),
+            ),
+            Positioned(
+                bottom: size.width * 0.0,
+                right: size.width * 0.0,
+                child: ClipOval(
+                  child: Material(
+                    color: Colors.blue,
+                    child: InkWell(
+                      splashColor: Colors.grey,
+                      child: SizedBox(
+                          width: 33, height: 33, child: Icon(Icons.camera_alt)),
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: ((builder) => bottomSheet(size)));
+                      },
+                    ),
+                  ),
+                )),
+          ]),
+        ]));
+  }
 
-  // Widget bottomSheet(size) {
-  //   return Container(
-  //     height: size.height * 0.15,
-  //     width: MediaQuery.of(context).size.width,
-  //     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-  //     child: Column(
-  //       children: [
-  //         Text(
-  //           '이미지',
-  //           style: TextStyle(fontSize: 20),
-  //         ),
-  //         SizedBox(
-  //           height: 20,
-  //         ),
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             TextButton.icon(
-  //               icon: Icon(
-  //                 Icons.camera,
-  //                 size: 50,
-  //               ),
-  //               onPressed: () => pickImage(ImageSource.gallery)
-  //                   .then((_) => Navigator.pop(context)),
-  //               label: Text(
-  //                 '사진첩',
-  //                 style: TextStyle(fontSize: 20),
-  //               ),
-  //             ),
-  //             TextButton.icon(
-  //               icon: Icon(
-  //                 Icons.photo_library,
-  //                 size: 50,
-  //               ),
-  //               onPressed: () => pickImage(ImageSource.camera)
-  //               .then((_) => Navigator.pop(context)),
-  //               label: Text(
-  //                 '사진촬영',
-  //                 style: TextStyle(fontSize: 20),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget bottomSheet(size) {
+    return Container(
+      height: size.height * 0.15,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        children: [
+          Text(
+            '이미지',
+            style: TextStyle(fontSize: 20),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton.icon(
+                icon: Icon(
+                  Icons.camera,
+                  size: 40,
+                ),
+                onPressed: () => pickImage(ImageSource.gallery)
+                    .then((_) => Navigator.pop(context)),
+                label: Text(
+                  '사진첩',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              TextButton.icon(
+                icon: Icon(
+                  Icons.photo_library,
+                  size: 40,
+                ),
+                onPressed: () => pickImage(ImageSource.camera)
+                    .then((_) => Navigator.pop(context)),
+                label: Text(
+                  '사진촬영',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   void showSnackBar(String text) {
     final snackBar =
@@ -520,7 +522,7 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
-  void _requestMentoringButton(BuildContext context, Size size, _user) async {
+  void _modifiedButton(BuildContext context, Size size, _user) async {
     //mentor 컬렉션 내 mentee_uid에 필요한 데이터 객체 생성
     Map<String, dynamic>? myData = {};
 
@@ -530,7 +532,13 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
       'phoneNumber': _phoneNumberController.text,
     };
 
+    _firestorageRepository.uploadImageFile(_user.uid, image!);
+
     await FirebaseFirestore.instance.collection('users').doc(_user.uid).update({
+      'profile_img':
+          'https://firebasestorage.googleapis.com/v0/b/kkumjik1.appspot.com/o/image%2Fprofile_img%2F' +
+              _user.uid +
+              '?alt=media',
       'job': myData['job'],
       'phone_number': myData['phoneNumber'],
     }).then((value) {

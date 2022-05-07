@@ -29,6 +29,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
       backgroundColor: Colors.white,
       //앱바
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.white,
         title: const Text(
           '쿠폰함',

@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
         [DeviceOrientation.portraitUp]); //화면을 세로 방향으로 고정하기
     Size size = MediaQuery.of(context).size; //화면의 size 가져오기
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -132,7 +133,8 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.all(8.0),
                 height: size.width * 0.625,
                 width: size.width,
-                child: Center(child: CircularProgressIndicator()));
+                child:
+                    Center(child: Center(child: CircularProgressIndicator())));
           }),
     );
   }
@@ -253,7 +255,7 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         });
   }
 

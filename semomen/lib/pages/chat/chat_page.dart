@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:semomen/pages/chat_room_page.dart';
+import 'package:semomen/pages/chat/chat_room_page.dart';
 import '../../constants/db_constants.dart';
 
 class ChatPage extends StatefulWidget {
@@ -25,6 +25,7 @@ class _ChatPageState extends State<ChatPage> {
           } else {
             List data = snapshot.data!.get('mentor');
 
+<<<<<<< HEAD
             return DefaultTabController(
               length: 2,
               child: Scaffold(
@@ -72,7 +73,18 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     Center(child: Text("준비중입니다")),
                   ],
+=======
+            return Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                centerTitle: true,
+                title: Text(
+                  '채팅',
+                  style: TextStyle(color: Colors.black),
+>>>>>>> origin/dev
                 ),
+                elevation: 0,
               ),
             );
             // return Scaffold(
@@ -112,7 +124,9 @@ class ChatList extends StatelessWidget {
           if (snapshot.hasError) {
             return Text('Something went wrong');
           } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.data!.data() == null) {
+            return SizedBox();
           } else {
             Map<String, dynamic> chat_data =
                 snapshot.data!.data() as Map<String, dynamic>;
@@ -123,8 +137,6 @@ class ChatList extends StatelessWidget {
 
             return GestureDetector(
               onTap: () async {
-                print('test');
-
                 if (!chatDataReader.contains(uid)) {
                   await groupChatRef.doc(data['uid']).update({
                     'recent_message_reader': [...chatDataReader, uid]

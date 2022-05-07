@@ -7,10 +7,8 @@ import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/my_coupon_page.dart';
 import 'package:semomen/pages/profile/profile_page_update.dart';
-import 'package:semomen/pages/purchased_guide_page.dart';
 import 'package:semomen/providers/user_provider.dart';
-
-import '../ticket_page.dart';
+import 'package:semomen/pages/profile/mentor_list.dart';
 import '../service_center_page.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -39,6 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         _profileBox(size, _user),
+<<<<<<< HEAD
                         Card(
                           child: Column(
                             children: [
@@ -86,7 +85,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             ],
                           ),
                         ),
+=======
+                        _couponBox(),
+>>>>>>> origin/dev
                         _settingsBox(),
+                        _mentorBox(),
                         Spacer(),
                         _signOutBox(),
                       ],
@@ -99,20 +102,47 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Widget _couponBox() {
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyCouponPage()),
+          );
+        },
+        leading: Text('쿠폰함'),
+        dense: true,
+      ),
+    );
+  }
+
   Widget _signOutBox() {
     return Card(
       child: ListTile(
+        onTap: () {
+          FirebaseAuth.instance.signOut();
+        },
         leading: Text(
           '로그아웃',
           style:
               TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
         ),
-        trailing: IconButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut();
-          },
-          icon: Icon(Icons.chevron_right),
-        ),
+        dense: true,
+      ),
+    );
+  }
+
+  Widget _mentorBox() {
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MentorList()),
+          );
+        },
+        leading: Text('내 멘토 리스트'),
         dense: true,
       ),
     );
