@@ -17,6 +17,7 @@ class PostModel {
   String jobImgUrl;
   String jobVideoUrl;
   String profileImg;
+  String mentoringTime;
   String userName;
   String isActivate;
   bool isMentoring;
@@ -39,6 +40,7 @@ class PostModel {
     required this.jobVideoUrl,
     required this.profileImg,
     required this.userName,
+    required this.mentoringTime,
     required this.isActivate,
     required this.isMentoring,
   });
@@ -62,6 +64,7 @@ class PostModel {
       jobDesc: postData['job_desc'] ?? '',
       jobImgUrl: postData['job_img_url'] ?? '',
       jobVideoUrl: postData['job_video_url'] ?? '',
+      mentoringTime: postData['mentoring_time'] ?? '',
       profileImg: postData['profile_img'] ?? '',
       userName: postData['user_name'] ?? '',
       isActivate: postData['is_activate'] ?? '',

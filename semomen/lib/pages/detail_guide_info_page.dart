@@ -382,7 +382,9 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
                         ],
                       ),
                       Spacer(),
-                      _requestMentoringButton(context, size)
+                      widget.post.isMentoring == true
+                          ? _requestMentoringButton(context, size)
+                          : SizedBox()
                     ],
                   ),
                 ),
@@ -409,6 +411,18 @@ class _DetailGuideInfoPageState extends State<DetailGuideInfoPage> {
             ],
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: widget.post.isMentoring == true
+              ? Text(
+                  widget.post.mentoringTime,
+                  style: TextStyle(color: Colors.red),
+                )
+              : Text(
+                  '해당 멘토는 멘토링을 하지 않습니다.',
+                  style: TextStyle(color: Colors.red),
+                ),
+        )
       ],
     );
   }

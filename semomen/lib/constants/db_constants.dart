@@ -7,3 +7,4 @@ final adminRef = FirebaseFirestore.instance.collection('admin');
 final mentorRef = FirebaseFirestore.instance.collection('mentors');
 final groupChatRef = FirebaseFirestore.instance.collection('groupchat');
 final mentoringRef = FirebaseFirestore.instance.collection('mentoring');
+final reportRef = FirebaseFirestore.instance.collection('report');
