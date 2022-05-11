@@ -39,22 +39,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         _profileBox(size, _user),
-                        Card(
-                          child: Column(
-                            children: [
-                              _couponBox(),
-                              Divider(
-                                height: 0.0,
-                              ),
-                              _puchasedBox(),
-                              Divider(
-                                height: 0.1,
-                              ),
-                            ],
-                          ),
-                        ),
-                        _settingsBox(),
+                        _puchasedBox(),
+                        _couponBox(),
                         _mentorBox(),
+                        _settingsBox(),
                         Spacer(),
                         _signOutBox(),
                       ],
@@ -109,28 +97,32 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _couponBox() {
-    return ListTile(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MyCouponPage()),
-        );
-      },
-      leading: Text('쿠폰함'),
-      dense: true,
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyCouponPage()),
+          );
+        },
+        leading: Text('쿠폰함'),
+        dense: true,
+      ),
     );
   }
 
   Widget _puchasedBox() {
-    return ListTile(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TicketPage()),
-        );
-      },
-      leading: Text('이용권 구매'),
-      dense: true,
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TicketPage()),
+          );
+        },
+        leading: Text('이용권 구매'),
+        dense: true,
+      ),
     );
   }
 
