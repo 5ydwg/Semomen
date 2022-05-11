@@ -84,55 +84,71 @@ class ChatList extends StatelessWidget {
 
             bool isReaded = chatDataReader.contains(uid);
 
-            return GestureDetector(
-              onTap: () async {
-                if (!chatDataReader.contains(uid)) {
-                  await groupChatRef.doc(data['uid']).update({
-                    'recent_message_reader': [...chatDataReader, uid]
-                  });
+            List reportedList = [];
+            if (chat_data['mentee'] != null) {
+              List menteeList = chat_data['mentee'];
+
+              menteeList.forEach((value) {
+                if (value['reported'] != null && value['reported'] > 5) {
+                  reportedList.add(value['uid']);
                 }
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChatRoomPage(data: data)));
-              },
-              child: ListTile(
-                leading: CircleAvatar(
-                  radius: 30.0,
-                  backgroundImage: NetworkImage(
-                      data['profile_img'] == null ? '' : data['profile_img']),
-                  backgroundColor: Colors.transparent,
-                ),
-                title:
-                    Text(data['user_name'] == null ? ' ' : data['user_name']),
-                subtitle: Text(
-                  chat_data['recent_message'] == null
-                      ? ''
-                      : chat_data['recent_message'],
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    isReaded == false
-                        ? Container(
-                            width: 16.0,
-                            height: 16.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.0),
-                              color: Color(0xff189ab4),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              '!',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 12.0),
-                            ),
-                          )
-                        : SizedBox(),
-                    SizedBox()
-                  ],
-                ),
-              ),
-            );
+              });
+            }
+
+            return !reportedList.contains(uid)
+                ? GestureDetector(
+                    onTap: () async {
+                      if (!chatDataReader.contains(uid)) {
+                        await groupChatRef.doc(data['uid']).update({
+                          'recent_message_reader': [...chatDataReader, uid]
+                        });
+                      }
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ChatRoomPage(
+                              data: data, roomId: chat_data['room_id'])));
+                    },
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        radius: 30.0,
+                        backgroundImage: NetworkImage(
+                            data['profile_img'] == null
+                                ? ''
+                                : data['profile_img']),
+                        backgroundColor: Colors.transparent,
+                      ),
+                      title: Text(
+                          data['user_name'] == null ? ' ' : data['user_name']),
+                      subtitle: Text(
+                        chat_data['recent_message'] == null
+                            ? ''
+                            : chat_data['recent_message'],
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          isReaded == false
+                              ? Container(
+                                  width: 16.0,
+                                  height: 16.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4.0),
+                                    color: Color(0xff189ab4),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '!',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12.0),
+                                  ),
+                                )
+                              : SizedBox(),
+                          SizedBox()
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox();
           }
         });
   }

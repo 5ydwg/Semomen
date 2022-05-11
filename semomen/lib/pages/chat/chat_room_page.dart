@@ -1,18 +1,26 @@
+//firebase
+import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+//icon
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:semomen/constants/constant.dart';
 
+//constant
+import 'package:semomen/constants/constant.dart';
 import '../../constants/db_constants.dart';
 
 //page
 import 'chat_area.dart';
-import './chat_room_dialog.dart';
+import 'components/chat_room_dialog.dart';
 
 class ChatRoomPage extends StatefulWidget {
-  const ChatRoomPage({Key? key, required this.data}) : super(key: key);
+  const ChatRoomPage({Key? key, required this.data, this.roomId})
+      : super(key: key);
   final data;
+  final roomId;
+
   @override
   _ChatRoomPageState createState() => _ChatRoomPageState();
 }
@@ -26,15 +34,34 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     super.dispose();
   }
 
+  String mentorState = 'offline';
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+    //리얼타임 데이터 베이스에서 멘토 online 여부 확인해서 보여주기
+    DatabaseReference connectRef = FirebaseDatabase.instance
+        .ref('status/' + widget.data['uid'] + '/state');
+    print(1);
+    connectRef.onValue.listen((DatabaseEvent event) {
+      print(event.snapshot.value);
+      if (event.snapshot.value == 'online' && mentorState == 'offline') {
+        print(event.snapshot.value);
+        setState(() {
+          mentorState = 'online';
+        });
+      } else if (event.snapshot.value == 'offline' && mentorState == 'online') {
+        print(event.snapshot.value);
+        setState(() {
+          mentorState = 'offline';
+        });
+      }
+    });
     return Scaffold(
       extendBodyBehindAppBar: true,
       drawerEnableOpenDragGesture: true,
       endDrawer: Drawer(
-        child: ChatDrawer(data : widget.data),
+        child: ChatDrawer(data: widget.data, mentorState: mentorState, roomId : widget.roomId),
       ),
       appBar: AppBar(
         backgroundColor: mainBabyBlue.withOpacity(1),
@@ -59,7 +86,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             ),
             Icon(
               CupertinoIcons.circle_fill,
-              color: Colors.limeAccent[400],
+              color: mentorState == 'online'
+                  ? Colors.limeAccent[400]
+                  : Colors.red[400],
               size: 15,
             )
           ],

@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+<<<<<<< HEAD
 // import 'package:firebase_database/firebase_database.dart';
+=======
+import 'package:firebase_database/firebase_database.dart';
+>>>>>>> origin/dev
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -39,8 +43,26 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         _profileBox(size, _user),
+<<<<<<< HEAD
                         _puchasedBox(),
                         _couponBox(),
+=======
+                        Card(
+                          child: Column(
+                            children: [
+                              _couponBox(),
+                              Divider(
+                                height: 0.0,
+                              ),
+                              _puchasedBox(),
+                              Divider(
+                                height: 0.1,
+                              ),
+                            ],
+                          ),
+                        ),
+                        _settingsBox(),
+>>>>>>> origin/dev
                         _mentorBox(),
                         _settingsBox(),
                         Spacer(),
@@ -97,6 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _couponBox() {
+<<<<<<< HEAD
     return Card(
       child: ListTile(
         onTap: () {
@@ -108,10 +131,22 @@ class _ProfilePageState extends State<ProfilePage> {
         leading: Text('쿠폰함'),
         dense: true,
       ),
+=======
+    return ListTile(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyCouponPage()),
+        );
+      },
+      leading: Text('쿠폰함'),
+      dense: true,
+>>>>>>> origin/dev
     );
   }
 
   Widget _puchasedBox() {
+<<<<<<< HEAD
     return Card(
       child: ListTile(
         onTap: () {
@@ -123,6 +158,17 @@ class _ProfilePageState extends State<ProfilePage> {
         leading: Text('이용권 구매'),
         dense: true,
       ),
+=======
+    return ListTile(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TicketPage()),
+        );
+      },
+      leading: Text('이용권 구매'),
+      dense: true,
+>>>>>>> origin/dev
     );
   }
 
@@ -172,10 +218,17 @@ class _ProfilePageState extends State<ProfilePage> {
         onTap: () {
           String currentUid = FirebaseAuth.instance.currentUser!.uid;
           final userStatusDatabaseRef =
+<<<<<<< HEAD
               // FirebaseDatabase.instance.ref("status/" + currentUid);
 
               // userStatusDatabaseRef.set({'state': 'offline'});
               FirebaseAuth.instance.signOut();
+=======
+              FirebaseDatabase.instance.ref("status/" + currentUid);
+
+          userStatusDatabaseRef.set({'state': 'offline'});
+          FirebaseAuth.instance.signOut();
+>>>>>>> origin/dev
         },
         leading: Text(
           '로그아웃',
