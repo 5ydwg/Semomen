@@ -11,9 +11,13 @@ class TicketPage extends StatefulWidget {
 class _TicketPageState extends State<TicketPage> {
   //get menu => null;
   String a = '';
-  //결제금액 변수
-  String b = '';
+  //1회권 결제금액 변수
+  String d = '';
   //클릭 색상 변경
+  String c = '';
+  bool one = false;
+  bool five = false;
+  bool ten = false;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +69,9 @@ class _TicketPageState extends State<TicketPage> {
                         onTap: () {
                           setState(() {
                             a = '1000';
-                            b = '';
+                            one = true;
+                            five = false;
+                            ten = false;
                           });
                         },
                         child: Container(
@@ -80,19 +86,26 @@ class _TicketPageState extends State<TicketPage> {
                           ),
                           width: 125,
                           height: 35,
-                          decoration: b == ""
+                          decoration: !one
                               ? BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: Colors.black87,
+                                  color: Colors.grey,
                                 )
                               : BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: Colors.blue,
+                                  color: Colors.black,
                                 ),
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          setState(() {
+                            a = '5000';
+                            one = false;
+                            five = true;
+                            ten = false;
+                          });
+                        },
                         child: Container(
                           child: Center(
                             child: Text(
@@ -105,14 +118,26 @@ class _TicketPageState extends State<TicketPage> {
                           ),
                           width: 125,
                           height: 35,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.black87,
-                          ),
+                          decoration: !five
+                              ? BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.grey,
+                                )
+                              : BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          setState(() {
+                            a = '10000';
+                            one = false;
+                            five = false;
+                            ten = true;
+                          });
+                        },
                         child: Container(
                           child: Center(
                             child: Text(
@@ -125,10 +150,15 @@ class _TicketPageState extends State<TicketPage> {
                           ),
                           width: 125,
                           height: 35,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.black87,
-                          ),
+                          decoration: !ten
+                              ? BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.grey,
+                                )
+                              : BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
                         ),
                       ),
                     ]),
