@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -38,55 +39,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         _profileBox(size, _user),
-                        Card(
-                          child: Column(
-                            children: [
-                              // ListTile(
-                              //   onTap: () {
-                              //     Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //           builder: (context) =>
-                              //               PurchasedGuidePage()),
-                              //     );
-                              //   },
-                              //   leading: Text('구매 가이드'),
-                              //   dense: true,
-                              // ),
-                              ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MyCouponPage()),
-                                  );
-                                },
-                                leading: Text('쿠폰함'),
-                                dense: true,
-                              ),
-                              Divider(
-                                height: 0.0,
-                              ),
-
-                              ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => TicketPage()),
-                                  );
-                                },
-                                leading: Text('이용권 구매'),
-                                dense: true,
-                              ),
-                              Divider(
-                                height: 0.1,
-                              ),
-                            ],
-                          ),
-                        ),
-                        _settingsBox(),
+                        _puchasedBox(),
+                        _couponBox(),
                         _mentorBox(),
+                        _settingsBox(),
                         Spacer(),
                         _signOutBox(),
                       ],
@@ -96,85 +52,6 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             });
       },
-    );
-  }
-
-  Widget _couponBox() {
-    return Card(
-      child: ListTile(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MyCouponPage()),
-          );
-        },
-        leading: Text('쿠폰함'),
-        dense: true,
-      ),
-    );
-  }
-
-  Widget _signOutBox() {
-    return Card(
-      child: ListTile(
-        onTap: () {
-          FirebaseAuth.instance.signOut();
-        },
-        leading: Text(
-          '로그아웃',
-          style:
-              TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
-        ),
-        dense: true,
-      ),
-    );
-  }
-
-  Widget _mentorBox() {
-    return Card(
-      child: ListTile(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MentorList()),
-          );
-        },
-        leading: Text('내 멘토 리스트'),
-        dense: true,
-      ),
-    );
-  }
-
-  Widget _settingsBox() {
-    return Card(
-      child: Column(
-        children: [
-          // ListTile(
-          //   leading: Text('계정 관리'),
-          //   trailing: IconButton(
-          //     onPressed: () {},
-          //     icon: Icon(Icons.chevron_right),
-          //   ),
-          //   dense: true,
-          // ),
-          Divider(
-            height: 0.0,
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ServiceCenterPage()),
-              );
-            },
-            leading: Text('고객센터'),
-            dense: true,
-          ),
-          Divider(
-            height: 0.0,
-          ),
-        ],
-      ),
     );
   }
 
@@ -215,6 +92,97 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               child: Text('프로필 수정')),
         ],
+      ),
+    );
+  }
+
+  Widget _couponBox() {
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyCouponPage()),
+          );
+        },
+        leading: Text('쿠폰함'),
+        dense: true,
+      ),
+    );
+  }
+
+  Widget _puchasedBox() {
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TicketPage()),
+          );
+        },
+        leading: Text('이용권 구매'),
+        dense: true,
+      ),
+    );
+  }
+
+  Widget _settingsBox() {
+    return Card(
+      child: Column(
+        children: [
+          Divider(
+            height: 0.0,
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ServiceCenterPage()),
+              );
+            },
+            leading: Text('고객센터'),
+            dense: true,
+          ),
+          Divider(
+            height: 0.0,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _mentorBox() {
+    return Card(
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MentorList()),
+          );
+        },
+        leading: Text('내 멘토 리스트'),
+        dense: true,
+      ),
+    );
+  }
+
+  Widget _signOutBox() {
+    return Card(
+      child: ListTile(
+        onTap: () {
+          String currentUid = FirebaseAuth.instance.currentUser!.uid;
+          final userStatusDatabaseRef =
+              // FirebaseDatabase.instance.ref("status/" + currentUid);
+
+              // userStatusDatabaseRef.set({'state': 'offline'});
+              FirebaseAuth.instance.signOut();
+        },
+        leading: Text(
+          '로그아웃',
+          style:
+              TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+        ),
+        dense: true,
       ),
     );
   }
