@@ -47,7 +47,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       setState(() {
         time++;
       });
-      if (time == 30) {
+      if (time == 600) {
         exit();
       }
     });
@@ -87,11 +87,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               SizedBox(
                 width: 10,
               ),
-              Icon(
-                CupertinoIcons.circle_fill,
-                color: Colors.limeAccent[400],
-                size: 15,
-              )
             ],
           ),
           actions: [
@@ -180,7 +175,7 @@ void ChatSubmit(data, message) async {
   Timestamp timestampNow = Timestamp.fromDate(currentTime);
   if (message != null) {
     await mentoringRef.doc(data['room_id']).collection('messages').add({
-      'created_at': timestampNow,
+      'created_at': FieldValue.serverTimestamp(),
       'message': message,
       'profile_img': data['mentee_img'],
       "speaker": data['mentee'],

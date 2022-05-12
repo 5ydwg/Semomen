@@ -47,20 +47,22 @@ class _ChatDrawerState extends State<ChatDrawer> {
                   DrawerHeader(
                     child: Text('Drawer Header'),
                   ),
-                  ListTile(
-                    title: widget.mentorState == 'online'
-                        ? Text('멘토링 신청')
-                        : Text('현재 멘토님은 로그아웃 중이십니다.'),
-                    onTap: () async {
-                      bool descMentoring = await requestMentoring(
-                          context, widget.data, current_uid);
+                  widget.mentorState == 'online'
+                      ? ListTile(
+                          title: Text('멘토링 신청'),
+                          onTap: () async {
+                            bool descMentoring = await requestMentoring(
+                                context, widget.data, current_uid);
 
-                      if (descMentoring == true) {
-                        _showMentoringDialog(context, current_uid);
-                      }
-                      ;
-                    },
-                  ),
+                            if (descMentoring == true) {
+                              _showMentoringDialog(context, current_uid);
+                            }
+                            ;
+                          },
+                        )
+                      : ListTile(
+                          title: Text('현재 멘토님은 로그아웃 중이십니다.'),
+                        ),
                   Expanded(
                     child: ListView.builder(
                       itemCount: menteeList.length,
@@ -96,7 +98,6 @@ class _ChatDrawerState extends State<ChatDrawer> {
                       },
                     ),
                   ),
-                  Spacer(),
                   ListTile(
                     title: Text(
                       '이 방에서 나가기',
@@ -170,6 +171,7 @@ Future<bool> requestMentoring(context, data, current_uid) async {
 
 Future<String?> _showMentoringDialog(BuildContext context, String current_uid) {
   return showDialog<String>(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) => StreamBuilder<QuerySnapshot<Object?>>(
       stream: mentoringRef.where('mentee', isEqualTo: current_uid).snapshots(),

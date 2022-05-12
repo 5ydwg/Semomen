@@ -96,13 +96,13 @@ class _HomePageState extends State<HomePage> {
                       height: size.width * 0.625,
                       width: size.width,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        color: mainBlueGrotto,
-                        image: DecorationImage(
-                            onError: (object, stackTrace) {},
-                            image: NetworkImage(snapshot.data?.jobImgUrl ?? ''),
-                            fit: BoxFit.cover),
-                      ),
+                          borderRadius: BorderRadius.circular(4.0),
+                          color: mainBlueGrotto,
+                          image: DecorationImage(
+                              onError: (object, stackTrace) {},
+                              image:
+                                  NetworkImage(snapshot.data?.jobImgUrl ?? ''),
+                              fit: BoxFit.cover)),
                       child: Stack(
                         children: [
                           Positioned(

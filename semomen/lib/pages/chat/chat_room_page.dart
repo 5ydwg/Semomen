@@ -61,7 +61,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       extendBodyBehindAppBar: true,
       drawerEnableOpenDragGesture: true,
       endDrawer: Drawer(
-        child: ChatDrawer(data: widget.data, mentorState: mentorState, roomId : widget.roomId),
+        child: ChatDrawer(
+            data: widget.data, mentorState: mentorState, roomId: widget.roomId),
       ),
       appBar: AppBar(
         backgroundColor: mainBabyBlue.withOpacity(1),
@@ -201,7 +202,7 @@ void ChatSubmit(data, message) async {
   Timestamp timestampNow = Timestamp.fromDate(currentTime);
   if (message != null) {
     await groupChatRef.doc(data['uid']).collection('messages').add({
-      'created_at': timestampNow,
+      'created_at': FieldValue.serverTimestamp(),
       'message': message,
       'profile_img': myData['profileImg'],
       "speaker": myData['speaker'],
@@ -210,7 +211,7 @@ void ChatSubmit(data, message) async {
 
     await groupChatRef.doc(data['uid']).update({
       'recent_message': message,
-      'recent_message_created_at': timestampNow,
+      'recent_message_created_at': FieldValue.serverTimestamp(),
       'recent_message_reader': [myData['speaker']]
     }).then((value) => print('최신 메시지 업데이트 완료'));
   }

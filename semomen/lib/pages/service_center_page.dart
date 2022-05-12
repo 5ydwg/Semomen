@@ -12,11 +12,26 @@ class _ServiceCenterPageState extends State<ServiceCenterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Text(
-          '고객센터: 123@gmail.com',
-          style: TextStyle(fontSize: 20, color: Colors.blue),
+      //앱바
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: const Text(
+          '고객센터',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
         ),
+      ),
+      body: Center(
+        child: Text('이메일 문의만 가능합니다.\nl5ydwgl@yonsei.ac.kr',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+            )),
       ),
     );
   }
