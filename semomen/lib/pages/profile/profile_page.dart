@@ -42,6 +42,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         _profileBox(size, _user),
                         _puchasedBox(),
                         _couponBox(),
+                        _puchasedBox(),
+                        _couponBox(),
                         _mentorBox(),
                         _settingsBox(),
                         Spacer(),
@@ -181,6 +183,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => SignInPage()));
+
+          FirebaseAuth.instance.signOut();
         },
         leading: Text(
           '로그아웃',
