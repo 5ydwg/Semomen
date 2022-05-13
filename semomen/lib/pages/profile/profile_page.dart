@@ -42,8 +42,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         _profileBox(size, _user),
                         _puchasedBox(),
                         _couponBox(),
-                        _puchasedBox(),
-                        _couponBox(),
                         _mentorBox(),
                         _settingsBox(),
                         Spacer(),
