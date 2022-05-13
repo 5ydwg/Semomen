@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0.0,
         title: Text(
           '&.ssul',
-          style: TextStyle(fontWeight: FontWeight.bold, color: mainBlueGrotto),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
       body: ListView(

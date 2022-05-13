@@ -50,7 +50,7 @@ class _SignInPageState extends State<SignInPage> {
                           Text(
                             '&.ssul',
                             style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.black,
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold),
                           ),
