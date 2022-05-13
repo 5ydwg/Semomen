@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
+import 'package:semomen/main.dart';
+import 'package:semomen/pages/root_page.dart';
 import 'package:semomen/pages/sign_up_page.dart';
+import 'package:semomen/providers/user_provider.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -187,8 +191,8 @@ class _SignInPageState extends State<SignInPage> {
                           width: size.width,
                           child: ElevatedButton(
                               onPressed: () {
-                                emailSignIn(
-                                    _emailController, _passwordController);
+                                emailSignIn(context, _emailController,
+                                    _passwordController);
                               },
                               style: ElevatedButton.styleFrom(
                                   primary: mainNavyBlue),
@@ -238,19 +242,34 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  void emailSignIn(TextEditingController _emailController,
+  void emailSignIn(BuildContext context, TextEditingController _emailController,
       TextEditingController _passwordController) async {
     // 이메일 & 패스워드 로그인을 위한 정해진 폼.
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .signInWithEmailAndPassword(
-              email: _emailController.text, password: _passwordController.text);
+              email: _emailController.text, password: _passwordController.text)
+          .then((value) {
+        if (value.user!.emailVerified == true) {
+          context.read<UserProvider>().setUserState(true, true);
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => MyApp()));
+        } else if (value.user!.emailVerified == false) {
+          _showSnackBar(context, '이메일 인증을 진행해 주세요');
+          FirebaseAuth.instance.signOut();
+        }
+        ;
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        _showSnackBar(context, '가입한 유저 이메일이 없습니다.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        _showSnackBar(context, '비밀번호가 틀렸습니다.');
       }
     }
+  }
+
+  void _showSnackBar(context, text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 }

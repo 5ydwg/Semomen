@@ -314,17 +314,15 @@ Future<String?> _showReportDialog(
 }
 
 void _clickMethod(menteeList, index, mentorUid, reportReason, roomId) {
+  String current_uid = FirebaseAuth.instance.currentUser!.uid;
   if (menteeList[index]['reported'] != null) {
     menteeList[index]['reported'] = menteeList[index]['reported'] + 1;
   } else {
     menteeList[index]['reported'] = 1;
   }
-  mentorRef.doc(mentorUid).update({'mentee': menteeList});
-
-  groupChatRef.doc(roomId).update({'mentee': menteeList});
-
   Map<String, dynamic> reportData = {
-    'uid': menteeList[index]['uid'],
+    'reporter': current_uid,
+    'criminal': menteeList[index]['uid'],
     'name': menteeList[index]['mentee_name'],
     'reason': reportReason,
   };

@@ -8,6 +8,7 @@ import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/my_coupon_page.dart';
 import 'package:semomen/pages/profile/profile_page_update.dart';
+import 'package:semomen/pages/sign_in_page.dart';
 import 'package:semomen/pages/ticket_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 import 'package:semomen/pages/profile/mentor_list.dart';
@@ -169,13 +170,17 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _signOutBox() {
     return Card(
       child: ListTile(
-        onTap: () {
+        onTap: () async {
           String currentUid = FirebaseAuth.instance.currentUser!.uid;
           final userStatusDatabaseRef =
               FirebaseDatabase.instance.ref("status/" + currentUid);
 
           userStatusDatabaseRef.set({'state': 'offline'});
-          FirebaseAuth.instance.signOut();
+
+          await FirebaseAuth.instance.signOut();
+
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => SignInPage()));
         },
         leading: Text(
           '로그아웃',
