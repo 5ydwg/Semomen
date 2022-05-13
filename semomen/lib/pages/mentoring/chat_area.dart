@@ -56,13 +56,21 @@ class ChatArea extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(time.toString()),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        timeFormat(time),
+                        style: TextStyle(
+                          color: time < 540 ? Colors.black : Colors.red,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
-                        print(data['uid']);
-                        print(chatMessages);
-                      },
+                      onTap: () {},
                       child: ListView.builder(
                         controller: _scrollController,
                         itemCount: chatMessages.length,
@@ -86,5 +94,25 @@ class ChatArea extends StatelessWidget {
             return Text('채팅 내용이 없습니다.');
           }
         });
+  }
+}
+
+String timeFormat(int time) {
+  int seconds = time;
+  if (seconds != null && seconds != 0) {
+    int hours = (seconds / 3600).truncate();
+    seconds = (seconds % 3600).truncate();
+    int minutes = (seconds / 60).truncate();
+
+    String hoursStr = (hours).toString().padLeft(2, '0');
+    String minutesStr = (minutes).toString().padLeft(2, '0');
+    String secondsStr = (seconds % 60).toString().padLeft(2, '0');
+
+    if (hours == 0) {
+      return "$minutesStr:$secondsStr";
+    }
+    return "$hoursStr:$minutesStr:$secondsStr";
+  } else {
+    return "";
   }
 }

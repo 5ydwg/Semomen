@@ -7,42 +7,51 @@ import 'package:semomen/pages/root_page.dart';
 import 'package:semomen/pages/sign_in_page.dart';
 import 'package:semomen/providers/mentee_provider.dart';
 import 'package:semomen/providers/review_provider.dart';
+import 'package:semomen/providers/user_provider.dart';
 import 'package:semomen/repositories/review_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // main 함수에서 async 사용하기 위함
-  await Firebase.initializeApp(); // firebase 앱 시작
+  await Firebase.initializeApp();
+
+  MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => UserProvider()),
+    ],
+  ); // firebase 앱 시작
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-            create: (context) =>
-                ReviewProvider(reviewRepository: ReviewRepository())),
-      ],
-      child: MaterialApp(
-        title: 'Semomen',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-              if (!snapshot.hasData) {
-                return const SignInPage();
-              } else {
-                return const RootPage();
-              }
-            }),
-      ),
+    User? user = FirebaseAuth.instance.currentUser;
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+                create: (context) =>
+                    ReviewProvider(reviewRepository: ReviewRepository())),
+            ChangeNotifierProvider(create: (context) => UserProvider()),
+          ],
+          child: MaterialApp(
+            title: 'Semomen',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: user != null ? RootPage() : SignInPage(),
+          )),
     );
   }
 }

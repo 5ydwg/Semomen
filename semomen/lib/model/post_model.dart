@@ -6,6 +6,7 @@ class PostModel {
   List<dynamic> career;
   DateTime dateTime;
   //Map<String, dynamic> guides;
+  List<dynamic> shortcut;
   List<dynamic> lecture;
   List<dynamic> major;
   List<dynamic> vLog;
@@ -28,6 +29,7 @@ class PostModel {
     required this.career,
     required this.dateTime,
     //required this.guides,
+    required this.shortcut,
     required this.lecture,
     required this.major,
     required this.vLog,
@@ -54,6 +56,7 @@ class PostModel {
       career: postData['career'],
       //dateTime : postData['upload_time'].toDate() ?? DateTime.now(),
       dateTime: postData['date_time'].toDate() ?? DateTime.now(),
+      shortcut: postData['guides']['shortcut'] ?? [],
       lecture: postData['guides']['lecture'] ?? [],
       major: postData['guides']['major'] ?? [],
       vLog: postData['guides']['v_log'] ?? [],

@@ -35,6 +35,15 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
     );
   }
 
+  List<ExpansionPanelRadio> shortcut(Size size) {
+    final shortcut = widget.post.shortcut.toList();
+    return shortcut.asMap().entries.map((entry) {
+      int value = entry.key;
+      dynamic content = entry.value;
+      return _capabilitiesGuideItem(size, value, content);
+    }).toList();
+  }
+
   List<ExpansionPanelRadio> lecture(Size size) {
     final lecture = widget.post.lecture.toList();
     return lecture.asMap().entries.map((entry) {
@@ -84,12 +93,12 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          // ExpansionPanelList.radio(
-          //   expandedHeaderPadding: EdgeInsets.all(0.0),
-          //   children: [
-          //     ...lecture(size),
-          //   ],
-          // ),
+          ExpansionPanelList.radio(
+            expandedHeaderPadding: EdgeInsets.all(0.0),
+            children: [
+              ...shortcut(size),
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
@@ -146,24 +155,26 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
                   ],
                 )
               : Container(),
-          // widget.post.youtube!.isNotEmpty ? Column(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Padding(
-          //       padding: const EdgeInsets.symmetric(vertical: 8.0),
-          //       child: Text(
-          //         '추천 유튜브',
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //     ),
-          //     ExpansionPanelList.radio(
-          //       expandedHeaderPadding: EdgeInsets.all(0.0),
-          //       children: [
-          //         ...youTube(size),
-          //       ],
-          //     ),
-          //   ],
-          // ) : Container(),
+          // widget.post.youtube!.isNotEmpty
+          //     ? Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Padding(
+          //             padding: const EdgeInsets.symmetric(vertical: 8.0),
+          //             child: Text(
+          //               '추천 유튜브',
+          //               style: TextStyle(fontWeight: FontWeight.bold),
+          //             ),
+          //           ),
+          //           ExpansionPanelList.radio(
+          //             expandedHeaderPadding: EdgeInsets.all(0.0),
+          //             children: [
+          //               ...youTube(size),
+          //             ],
+          //           ),
+          //         ],
+          //       )
+          //     : Container(),
         ],
       ),
     );
@@ -186,7 +197,7 @@ class _CapabilityGuidePageState extends State<CapabilityGuidePage> {
                     margin: EdgeInsets.all(12.0),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4.0),
-                        color: mainBlueGreen),
+                        color: Color.fromARGB(197, 0, 0, 0)),
                     alignment: Alignment.center,
                     child: Text(
                       '${index + 1}',

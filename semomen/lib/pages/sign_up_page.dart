@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/model/user_model.dart';
+import 'package:semomen/pages/sign_in_page.dart';
+import 'package:semomen/providers/user_provider.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -26,6 +29,8 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _jobController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
   bool isLoading = false; // 계정 생성 과정을 나타내는 변수
+
+  bool isEmailVerified = false;
 
   @override
   void dispose() {
@@ -427,24 +432,33 @@ class _SignUpPageState extends State<SignUpPage> {
     });
     // create user with email & password in firebase.
     try {
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _pwdController.text,
-      );
+      )
+          .then((credential) async {
+        await createUserData(
+          uid: credential.user!.uid,
+          email: _emailController.text,
+          userName: _userNameController.text,
+          birth: _birthController.text,
+          job: _jobController.text,
+          phoneNumber: _phoneNumberController.text,
+        );
+        //mentee 정보 생성
+        await createMenteeData(
+          uid: credential.user!.uid,
+        );
+        await credential.user!.sendEmailVerification();
+
+        await FirebaseAuth.instance.signOut();
+
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => SignInPage()));
+      });
       //user 정보 생성
-      createUserData(
-        uid: credential.user!.uid,
-        email: _emailController.text,
-        userName: _userNameController.text,
-        birth: _birthController.text,
-        job: _jobController.text,
-        phoneNumber: _phoneNumberController.text,
-      );
-      //mentee 정보 생성
-      createMenteeData(
-        uid: credential.user!.uid,
-      );
+
     } on FirebaseAuthException catch (e) {
       setState(() {
         isLoading = false;
@@ -489,7 +503,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return await users.doc(uid).set(_userMap).then((value) {
       // if you have successfully created user data in firestore
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('가입 완료'),
+        content: Text('이메일 주소로 인증메일이 발송되었습니다.'),
       ));
       setState(() {
         isLoading = false;
