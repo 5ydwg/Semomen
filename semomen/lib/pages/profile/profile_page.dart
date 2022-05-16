@@ -9,7 +9,7 @@ import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/user_model.dart';
 import 'package:semomen/pages/my_coupon_page.dart';
 import 'package:semomen/pages/profile/profile_page_update.dart';
-import 'package:semomen/pages/sign_in_page.dart';
+import 'package:semomen/pages/auth/sign_in_page.dart';
 import 'package:semomen/pages/ticket_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 import 'package:semomen/pages/profile/mentor_list.dart';

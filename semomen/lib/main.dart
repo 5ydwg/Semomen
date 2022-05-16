@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/pages/root_page.dart';
-import 'package:semomen/pages/sign_in_page.dart';
+import 'package:semomen/pages/auth/sign_in_page.dart';
 import 'package:semomen/providers/mentee_provider.dart';
 import 'package:semomen/providers/review_provider.dart';
 import 'package:semomen/providers/user_provider.dart';
@@ -42,7 +42,6 @@ class _MyAppState extends State<MyApp> {
             ChangeNotifierProvider(
                 create: (context) =>
                     ReviewProvider(reviewRepository: ReviewRepository())),
-            ChangeNotifierProvider(create: (context) => UserProvider()),
           ],
           child: MaterialApp(
             title: 'Semomen',

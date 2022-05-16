@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/main.dart';
 import 'package:semomen/pages/root_page.dart';
-import 'package:semomen/pages/sign_up_page.dart';
+import 'package:semomen/pages/auth/sign_up_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 
 class SignInPage extends StatefulWidget {
@@ -251,11 +251,11 @@ class _SignInPageState extends State<SignInPage> {
               email: _emailController.text, password: _passwordController.text)
           .then((value) {
         if (value.user!.emailVerified == true) {
-          context.read<UserProvider>().setUserState(true, true);
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => MyApp()));
         } else if (value.user!.emailVerified == false) {
           _showSnackBar(context, '이메일 인증을 진행해 주세요');
+          value.user!.sendEmailVerification();
           FirebaseAuth.instance.signOut();
         }
         ;

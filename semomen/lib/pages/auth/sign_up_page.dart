@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/model/user_model.dart';
-import 'package:semomen/pages/sign_in_page.dart';
+import 'package:semomen/pages/auth/sign_in_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 
 class SignUpPage extends StatefulWidget {
