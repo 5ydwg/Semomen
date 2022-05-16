@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:semomen/constants/constant.dart';
-import 'package:semomen/pages/review_page.dart';
+import 'package:semomen/pages/review/review_page.dart';
 
 class GuideInfoPage extends StatefulWidget {
   const GuideInfoPage({Key? key}) : super(key: key);

@@ -57,6 +57,7 @@ class ReviewProvider extends ChangeNotifier {
       uid: currentUid,
       uploadTime: DateTime.now(),
       userName: user.userName,
+      report: [],
     ).toJson();
 
     postRef.doc(postId).collection('reviews').doc(currentUid + 'r').set(review);

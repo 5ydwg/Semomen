@@ -21,7 +21,7 @@ import 'package:semomen/model/post_model.dart';
 //page
 import 'package:semomen/pages/capability_gude_page.dart';
 import 'package:semomen/pages/create_review_page.dart';
-import 'package:semomen/pages/review_page.dart';
+import 'package:semomen/pages/review/review_page.dart';
 
 // provider
 import 'package:semomen/providers/review_provider.dart';
