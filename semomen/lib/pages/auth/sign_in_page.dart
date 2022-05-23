@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/main.dart';
@@ -176,11 +177,18 @@ class _SignInPageState extends State<SignInPage> {
                                   color: Colors.grey,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              ' 비밀번호 재설정',
-                              style: TextStyle(
-                                  color: mainBlueGrotto,
-                                  fontWeight: FontWeight.bold),
+                            GestureDetector(
+                              onTap: () {
+                                FirebaseAuth.instance.sendPasswordResetEmail(
+                                    email: _emailController.text);
+                                _showSnackBar(context, '비밀번호 확인 메일 전송.');
+                              },
+                              child: Text(
+                                ' 비밀번호 재설정',
+                                style: TextStyle(
+                                    color: mainBlueGrotto,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ],
                         ),
@@ -251,8 +259,10 @@ class _SignInPageState extends State<SignInPage> {
               email: _emailController.text, password: _passwordController.text)
           .then((value) {
         if (value.user!.emailVerified == true) {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => MyApp()));
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => MyApp()),
+            (route) => false,
+          );
         } else if (value.user!.emailVerified == false) {
           _showSnackBar(context, '이메일 인증을 진행해 주세요');
           value.user!.sendEmailVerification();

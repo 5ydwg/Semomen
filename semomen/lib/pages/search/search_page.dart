@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/model/post_model.dart';
-import 'package:semomen/pages/detail_guide_info_page.dart';
+import 'package:semomen/pages/post/detail_guide_info_page.dart';
 import 'package:semomen/providers/post_provider.dart';
 import 'package:semomen/providers/search_provider.dart';
 

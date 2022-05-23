@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/review_model.dart';
-import 'package:semomen/pages/create_review_page.dart';
+import 'package:semomen/pages/review/create_review_page.dart';
 import 'package:semomen/providers/review_provider.dart';
 
 class ReviewPage extends StatelessWidget {

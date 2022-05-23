@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:semomen/pages/payment_page.dart';
+import 'package:semomen/pages/profile/payment_page.dart';
 
 class TicketPage extends StatefulWidget {
   TicketPage({Key? key}) : super(key: key);

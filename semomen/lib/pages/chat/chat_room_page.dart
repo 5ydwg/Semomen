@@ -200,7 +200,7 @@ void ChatSubmit(data, message) async {
   //현재 시간 받아오기
   DateTime currentTime = DateTime.now(); //DateTime
   Timestamp timestampNow = Timestamp.fromDate(currentTime);
-  if (message != null) {
+  if (message != null && message != '') {
     await groupChatRef.doc(data['uid']).collection('messages').add({
       'created_at': FieldValue.serverTimestamp(),
       'message': message,

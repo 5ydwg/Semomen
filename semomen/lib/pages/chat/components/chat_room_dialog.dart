@@ -98,13 +98,13 @@ class _ChatDrawerState extends State<ChatDrawer> {
                       },
                     ),
                   ),
-                  ListTile(
-                    title: Text(
-                      '이 방에서 나가기',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    onTap: () {},
-                  )
+                  // ListTile(
+                  //   title: Text(
+                  //     '이 방에서 나가기',
+                  //     style: TextStyle(color: Colors.red),
+                  //   ),
+                  //   onTap: () {},
+                  // )
                 ],
               ),
             );

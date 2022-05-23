@@ -19,8 +19,8 @@ import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/post_model.dart';
 
 //page
-import 'package:semomen/pages/capability_gude_page.dart';
-import 'package:semomen/pages/create_review_page.dart';
+import 'package:semomen/pages/profile/capability_gude_page.dart';
+import 'package:semomen/pages/review/create_review_page.dart';
 import 'package:semomen/pages/review/review_page.dart';
 
 // provider

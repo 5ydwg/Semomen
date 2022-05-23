@@ -54,7 +54,6 @@ class PostModel {
       postId: postDoc.id,
       uid: postData!['uid'],
       career: postData['career'],
-      //dateTime : postData['upload_time'].toDate() ?? DateTime.now(),
       dateTime: postData['date_time'].toDate() ?? DateTime.now(),
       shortcut: postData['guides']['shortcut'] ?? [],
       lecture: postData['guides']['lecture'] ?? [],

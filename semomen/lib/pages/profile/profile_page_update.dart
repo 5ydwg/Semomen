@@ -97,10 +97,6 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
                               Divider(),
                               _emailInput(_user),
                               Divider(),
-                              _pwdInput(_user),
-                              Divider(),
-                              _pwdConfirmInput(_user),
-                              Divider(),
                               _userNameInput(_user),
                               Divider(),
                               _dateOfBirthInput(context, _user),
@@ -283,90 +279,6 @@ class _ProfilePageUpdateState extends State<ProfilePageUpdate> {
               color: Colors.grey,
             ),
             hintText: _user.userName,
-            filled: true,
-            fillColor: Color(0xfff6f6fd),
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-          ),
-          onChanged: (String text) {},
-          onSubmitted: (String text) {},
-        ),
-      ],
-    );
-  }
-
-  Widget _pwdConfirmInput(_user) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '비밀번호 확인',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-        ),
-        TextField(
-          controller: _pwdConfirmController,
-          cursorColor: Colors.black,
-          obscureText: true,
-          decoration: InputDecoration(
-            prefixIcon: Icon(
-              Icons.lock_outline,
-              color: Colors.grey,
-            ),
-            suffixIcon: IconButton(
-              splashRadius: 1.0,
-              onPressed: () {
-                _pwdConfirmController.clear();
-              },
-              icon: Icon(
-                Icons.cancel,
-                color: Colors.grey,
-              ),
-            ),
-            hintText: '비밀번호를 한 번 더 입력해주세요.',
-            filled: true,
-            fillColor: Color(0xfff6f6fd),
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-          ),
-          onChanged: (String text) {},
-          onSubmitted: (String text) {},
-        ),
-      ],
-    );
-  }
-
-  Widget _pwdInput(_user) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '비밀번호',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-        ),
-        TextField(
-          controller: _pwdController,
-          cursorColor: Colors.black,
-          obscureText: true,
-          decoration: InputDecoration(
-            prefixIcon: Icon(
-              Icons.lock_outline,
-              color: Colors.grey,
-            ),
-            suffixIcon: IconButton(
-              splashRadius: 1.0,
-              onPressed: () {
-                _pwdController.clear();
-              },
-              icon: Icon(
-                Icons.cancel,
-                color: Colors.grey,
-              ),
-            ),
-            hintText: '비밀번호를 입력해주세요.',
             filled: true,
             fillColor: Color(0xfff6f6fd),
             border: OutlineInputBorder(

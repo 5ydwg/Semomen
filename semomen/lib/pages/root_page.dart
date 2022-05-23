@@ -84,21 +84,24 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => UserProvider()),
-        ChangeNotifierProvider(
-            create: (context) =>
-                MenteeProvider(firebaseAuth: FirebaseAuth.instance)),
-        ChangeNotifierProvider(
-            create: (context) => PostProvider(
-                postRepository: PostRepository(
-                    firebaseFirestore: FirebaseFirestore.instance))),
-        ChangeNotifierProvider(create: (context) => SearchProvider()),
-      ],
-      child: Scaffold(
-        body: IndexedStack(index: _selectedIndex, children: _pages),
-        bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => UserProvider()),
+          ChangeNotifierProvider(
+              create: (context) =>
+                  MenteeProvider(firebaseAuth: FirebaseAuth.instance)),
+          ChangeNotifierProvider(
+              create: (context) => PostProvider(
+                  postRepository: PostRepository(
+                      firebaseFirestore: FirebaseFirestore.instance))),
+          ChangeNotifierProvider(create: (context) => SearchProvider()),
+        ],
+        child: Scaffold(
+          body: IndexedStack(index: _selectedIndex, children: _pages),
+          bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
+        ),
       ),
     );
   }

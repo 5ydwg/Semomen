@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/constants/constant.dart';
 import 'package:semomen/constants/db_constants.dart';
 import 'package:semomen/model/mentee_model.dart';
 import 'package:semomen/model/post_model.dart';
-import 'package:semomen/pages/detail_guide_info_page.dart';
+import 'package:semomen/pages/post/detail_guide_info_page.dart';
 import 'package:semomen/providers/mentee_provider.dart';
 import 'package:semomen/providers/post_provider.dart';
 
@@ -92,37 +93,23 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: 8.0,
                     ),
-                    Container(
-                      height: size.width * 0.625,
-                      width: size.width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4.0),
-                          color: mainBlueGrotto,
-                          image: DecorationImage(
-                              onError: (object, stackTrace) {},
-                              image:
-                                  NetworkImage(snapshot.data?.jobImgUrl ?? ''),
-                              fit: BoxFit.cover)),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            right: 8.0,
-                            bottom: 0.0,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.white),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => DetailGuideInfoPage(
-                                        post: snapshot.data!)));
-                              },
-                              child: Text(
-                                '자세히',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          ),
-                        ],
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                DetailGuideInfoPage(post: snapshot.data!)));
+                      },
+                      child: Container(
+                        height: size.width * 0.625,
+                        width: size.width,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4.0),
+                            color: mainBlueGrotto,
+                            image: DecorationImage(
+                                onError: (object, stackTrace) {},
+                                image: NetworkImage(
+                                    snapshot.data?.jobImgUrl ?? ''),
+                                fit: BoxFit.cover)),
                       ),
                     ),
                   ],
@@ -451,28 +438,6 @@ class _HomePageState extends State<HomePage> {
                                       fit: BoxFit.cover),
                                 ),
                                 padding: EdgeInsets.all(8.0),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      bottom: 0.0,
-                                      child: SizedBox(
-                                        width: size.width * 0.6 * 0.25,
-                                        height: size.width * 0.6 * 0.25 * 0.5,
-                                        child: ElevatedButton(
-                                          onPressed: () {},
-                                          style: ElevatedButton.styleFrom(
-                                              primary: Colors.white),
-                                          child: Text(
-                                            '자세히',
-                                            style: TextStyle(
-                                                fontSize: 8.0,
-                                                color: Colors.black),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ),
                             );
                           }

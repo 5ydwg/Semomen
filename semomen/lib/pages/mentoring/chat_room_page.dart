@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:semomen/constants/constant.dart';
-import 'package:semomen/pages/home/home_page.dart';
+
 import '../../constants/db_constants.dart';
 import 'dart:async';
 
@@ -37,8 +37,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   void exit() async {
     await mentoringRef.doc(widget.data['room_id']).delete();
-    Navigator.popUntil(
-        context, ModalRoute.withName(Navigator.defaultRouteName));
+    Navigator.pushNamed(context, '/');
   }
 
   //10분뒤 나가지기
@@ -65,7 +64,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       onWillPop: () async {
         bool cancel = false;
         await _showCancelDialog(context, exit, cancel);
-        // Navigator.pop(context);
         print(cancel);
         return false;
       },

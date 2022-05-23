@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:semomen/model/post_model.dart';
-import 'package:semomen/pages/detail_guide_info_page.dart';
+import 'package:semomen/pages/post/detail_guide_info_page.dart';
 import '../../constants/db_constants.dart';
 
 class MentorList extends StatefulWidget {

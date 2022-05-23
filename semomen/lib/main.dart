@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:semomen/pages/root_page.dart';
 import 'package:semomen/pages/auth/sign_in_page.dart';
-import 'package:semomen/providers/mentee_provider.dart';
 import 'package:semomen/providers/review_provider.dart';
 import 'package:semomen/providers/user_provider.dart';
 import 'package:semomen/repositories/review_repository.dart';
@@ -35,22 +33,20 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-                create: (context) =>
-                    ReviewProvider(reviewRepository: ReviewRepository())),
-          ],
-          child: MaterialApp(
-            title: 'Semomen',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            home: user != null ? RootPage() : SignInPage(),
-          )),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+              create: (context) =>
+                  ReviewProvider(reviewRepository: ReviewRepository())),
+        ],
+        child: MaterialApp(
+          title: 'Semomen',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          // routes: {'/': (context) => RootPage()},
+          home: user != null ? RootPage() : SignInPage(),
+        ));
   }
 }

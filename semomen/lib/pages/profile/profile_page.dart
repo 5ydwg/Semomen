@@ -13,7 +13,7 @@ import 'package:semomen/pages/auth/sign_in_page.dart';
 import 'package:semomen/pages/ticket_page.dart';
 import 'package:semomen/providers/user_provider.dart';
 import 'package:semomen/pages/profile/mentor_list.dart';
-import '../service_center_page.dart';
+import 'service_center_page.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -102,12 +102,15 @@ class _ProfilePageState extends State<ProfilePage> {
     return Card(
       child: ListTile(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MyCouponPage()),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => MyCouponPage()),
+          // );
         },
-        leading: Text('쿠폰함'),
+        leading: Text(
+          '쿠폰함',
+          style: TextStyle(color: Colors.grey[400]),
+        ),
         dense: true,
       ),
     );
@@ -122,7 +125,10 @@ class _ProfilePageState extends State<ProfilePage> {
           //   MaterialPageRoute(builder: (context) => TicketPage()),
           // );
         },
-        leading: Text('이용권 구매'),
+        leading: Text(
+          '이용권 구매',
+          style: TextStyle(color: Colors.grey[400]),
+        ),
         dense: true,
       ),
     );

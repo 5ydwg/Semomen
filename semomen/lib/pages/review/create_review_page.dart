@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:semomen/providers/review_provider.dart';
 import 'package:provider/provider.dart';
-import '../constants/constant.dart';
+import '../../constants/constant.dart';
 
 class CreateReviewPage extends StatefulWidget {
   final String postId;
